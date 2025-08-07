@@ -31,7 +31,7 @@ export function FarcasterActions() {
               onClick={() =>
                 actions?.composeCast({
                   text: 'Check out this Monad Farcaster MiniApp Template!',
-                  embeds: [`https://blake-describes-bill-ul.trycloudflare.com`],
+                  embeds: [`https://monad-farmer.vercel.app`],
                 })
               }
             >

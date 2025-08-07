@@ -3,14 +3,14 @@ import type { Metadata } from 'next'
 
 const frame = {
   version: 'next',
-  imageUrl: 'https://blake-describes-bill-ul.trycloudflare.com/images/feed.png',
+  imageUrl: 'https://monad-farmer.vercel.app/images/feed.png',
   button: {
     title: '🌾 Start Farming',
     action: {
       type: 'launch_frame',
       name: 'Monad Farming Simulator',
-      url: 'https://blake-describes-bill-ul.trycloudflare.com',
-      splashImageUrl: 'https://blake-describes-bill-ul.trycloudflare.com/images/splash.png',
+      url: 'https://monad-farmer.vercel.app',
+      splashImageUrl: 'https://monad-farmer.vercel.app/images/splash.png',
       splashBackgroundColor: '#f0f9ff',
     },
   },

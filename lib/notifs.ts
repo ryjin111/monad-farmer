@@ -38,7 +38,7 @@ export async function sendFrameNotification({
       notificationId: crypto.randomUUID(),
       title,
       body,
-      targetUrl: "https://blake-describes-bill-ul.trycloudflare.com",
+      targetUrl: "https://monad-farmer.vercel.app",
       tokens: [notificationDetails.token],
     } satisfies SendNotificationRequest),
   });

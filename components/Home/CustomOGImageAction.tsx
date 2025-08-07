@@ -9,7 +9,7 @@ export default function CustomOGImageAction() {
   const pfpUrl = context?.user?.pfpUrl;
 
   const handleGenerateCustomOGImage = () => {
-    const ogImageUrl = `https://blake-describes-bill-ul.trycloudflare.com/api/og?username=${username}&image=${pfpUrl}`;
+    const ogImageUrl = `https://monad-farmer.vercel.app/api/og?username=${username}&image=${pfpUrl}`;
     actions?.composeCast({
       text: "I generated a custom OG image using Monad Mini App template",
       embeds: [ogImageUrl],
