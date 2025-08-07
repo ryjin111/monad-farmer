@@ -21,13 +21,31 @@ export function WalletActions() {
       console.log('isEthProviderAvailable:', isEthProviderAvailable)
       console.log('isSDKLoaded:', isSDKLoaded)
       
-      const connector = miniAppConnector()
-      console.log('Connector created:', connector)
+      // Check if we're in a Farcaster environment
+      if (typeof window !== 'undefined' && (window as any).farcaster) {
+        console.log('Farcaster environment detected')
+        
+        // Try to use the Farcaster wallet provider directly
+        if (isEthProviderAvailable) {
+          console.log('Using Farcaster ethProvider')
+          const connector = miniAppConnector()
+          await connect({ connector })
+        } else {
+          console.log('Farcaster ethProvider not available, trying alternative connection')
+          // Fallback to regular connector
+          const connector = miniAppConnector()
+          await connect({ connector })
+        }
+      } else {
+        console.log('Not in Farcaster environment, using regular connector')
+        const connector = miniAppConnector()
+        await connect({ connector })
+      }
       
-      await connect({ connector })
       console.log('Connect call completed')
     } catch (error) {
       console.error('Wallet connection error:', error)
+      throw error // Re-throw to let UI handle it
     }
   }
 
@@ -57,14 +75,15 @@ export function WalletActions() {
             </p>
           <p className="text-sm text-green-700">
             Chain ID: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{chainId}</span>
+            {chainId === 8453 && <span className="text-green-600 ml-2">✓ Monad Testnet</span>}
           </p>
-              </div>
+        </div>
 
-        {chainId !== monadTestnet.id && (
+        {chainId !== 8453 && (
               <button
                 type="button"
             className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg p-2 text-sm font-medium transition-colors"
-                onClick={() => switchChain({ chainId: monadTestnet.id })}
+                onClick={() => switchChain({ chainId: 8453 })}
               >
                 Switch to Monad Testnet
               </button>
@@ -101,9 +120,13 @@ export function WalletActions() {
           </button>
         
         {connectError && (
-          <p className="text-sm text-red-600 bg-red-50 p-2 rounded border">
-            Connection error: {connectError.message}
-          </p>
+          <div className="text-sm text-red-600 bg-red-50 p-2 rounded border">
+            <p className="font-medium">Connection Error:</p>
+            <p>{connectError.message}</p>
+            <p className="text-xs mt-1">
+              Make sure you're using the Farcaster app and have a wallet connected.
+            </p>
+          </div>
         )}
       </div>
     )

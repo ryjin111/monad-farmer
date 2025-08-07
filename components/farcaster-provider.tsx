@@ -35,11 +35,18 @@ export function FrameProvider({ children }: FrameProviderProps) {
       try {
         console.log('Initializing Farcaster SDK...')
         
-        // Always try to call ready() first
+        // Initialize the SDK according to Farcaster docs
         try {
           console.log('Calling sdk.actions.ready()...')
           await sdk.actions.ready()
           console.log('SDK ready() called successfully')
+          
+          // Check if wallet is available
+          if (sdk.wallet.ethProvider) {
+            console.log('Farcaster wallet provider is available')
+          } else {
+            console.log('Farcaster wallet provider not available')
+          }
         } catch (readyErr) {
           console.log('SDK ready() failed, continuing...', readyErr)
         }
