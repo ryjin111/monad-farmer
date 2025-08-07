@@ -54,30 +54,30 @@ export function WalletActions() {
         <div className="space-y-2">
           <p className="text-sm text-green-700">
             Address: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-          </p>
+            </p>
           <p className="text-sm text-green-700">
             Chain ID: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{chainId}</span>
           </p>
-        </div>
+              </div>
 
         {chainId !== monadTestnet.id && (
-          <button
-            type="button"
+              <button
+                type="button"
             className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg p-2 text-sm font-medium transition-colors"
-            onClick={() => switchChain({ chainId: monadTestnet.id })}
-          >
-            Switch to Monad Testnet
-          </button>
-        )}
+                onClick={() => switchChain({ chainId: monadTestnet.id })}
+              >
+                Switch to Monad Testnet
+              </button>
+            )}
 
-        <button
-          type="button"
+            <button
+              type="button"
           className="w-full bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 text-sm font-medium disabled:opacity-50 transition-colors"
           onClick={handleDisconnect}
           disabled={isDisconnecting}
-        >
+            >
           {isDisconnecting ? '🔄 Disconnecting...' : '❌ Disconnect Wallet'}
-        </button>
+            </button>
       </div>
     )
   }
@@ -91,14 +91,14 @@ export function WalletActions() {
           Connect your wallet to start farming and earning coins!
         </p>
         
-        <button
-          type="button"
+          <button
+            type="button"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-2 text-sm font-medium disabled:opacity-50 transition-colors"
           onClick={handleConnect}
           disabled={isConnecting}
-        >
+          >
           {isConnecting ? '🔄 Connecting...' : '🔗 Connect Wallet'}
-        </button>
+          </button>
         
         {connectError && (
           <p className="text-sm text-red-600 bg-red-50 p-2 rounded border">
