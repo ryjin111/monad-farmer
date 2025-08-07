@@ -82,11 +82,13 @@ export function useFarmingContract() {
     
     try {
       setIsLoading(true)
+      console.log('Planting crop:', { plotId, cropType, address })
       await writeContract({
         ...contractConfig,
         functionName: 'plantCrop',
         args: [BigInt(plotId), cropType],
       })
+      console.log('Plant crop transaction submitted')
     } catch (error) {
       console.error('Error planting crop:', error)
       setIsLoading(false)

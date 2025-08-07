@@ -38,12 +38,15 @@ export function FarmGrid() {
       return
     }
 
-    // If there's a crop, try to harvest it
+    // If plot is already planted or growing, show error
+    if (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) {
+      alert(`This plot is already occupied! You can water it or wait for it to grow.`)
+      return
+    }
+
+    // If there's a crop ready to harvest, harvest it
     if (plot.state === PlotState.READY) {
       harvestCrop(plotId)
-    } else if (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) {
-      // Water the crop if it's planted or growing
-      waterPlot(plotId)
     }
   }
 
@@ -143,22 +146,47 @@ export function FarmGrid() {
         {Array.from({ length: 25 }, (_, i) => {
           const plot = plots[i] || null
           return (
-            <button
-              key={i}
-              onClick={() => handlePlotClick(i)}
-              disabled={isLoading}
-              className={`
-                w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl
-                transition-all duration-200 hover:scale-105 active:scale-95
-                ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
-                ${getPlotColor(plot)}
-              `}
-            >
-              <div className="text-center">
-                <div>{getGrowthStage(plot)}</div>
-                {plot?.isWatered && <div className="text-xs text-blue-600">💧</div>}
-              </div>
-            </button>
+            <div key={i} className="relative">
+              <button
+                onClick={() => handlePlotClick(i)}
+                disabled={isLoading}
+                className={`
+                  w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl
+                  transition-all duration-200 hover:scale-105 active:scale-95
+                  ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
+                  ${getPlotColor(plot)}
+                `}
+              >
+                <div className="text-center">
+                  <div>{getGrowthStage(plot)}</div>
+                  {plot?.isWatered && <div className="text-xs text-blue-600">💧</div>}
+                </div>
+              </button>
+              
+              {/* Water Button for planted/growing crops */}
+              {plot && (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) && (
+                <button
+                  onClick={() => waterPlot(i)}
+                  disabled={isLoading}
+                  className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-full flex items-center justify-center transition-colors"
+                  title="Water crop"
+                >
+                  💧
+                </button>
+              )}
+              
+              {/* Harvest Button for ready crops */}
+              {plot && plot.state === PlotState.READY && (
+                <button
+                  onClick={() => harvestCrop(i)}
+                  disabled={isLoading}
+                  className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-500 hover:bg-yellow-600 text-white text-xs rounded-full flex items-center justify-center transition-colors"
+                  title="Harvest crop"
+                >
+                  ✂️
+                </button>
+              )}
+            </div>
           )
         })}
       </div>
@@ -239,6 +267,20 @@ export function FarmGrid() {
               <span>Cancel</span>
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Debug Info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="text-xs text-gray-500 text-center mt-4 p-2 bg-gray-100 rounded">
+          <p>Debug: {plots.filter(Boolean).length} plots loaded</p>
+          <p>Player: {player ? `${Number(player.coins)} coins` : 'Not connected'}</p>
+          <button
+            onClick={() => loadPlots && loadPlots()}
+            className="mt-2 px-2 py-1 bg-blue-500 text-white rounded text-xs"
+          >
+            Refresh Plots
+          </button>
         </div>
       )}
 
