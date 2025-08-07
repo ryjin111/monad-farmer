@@ -21,23 +21,14 @@ export default function Home() {
     return (
       <SafeAreaContainer insets={context?.client.safeAreaInsets}>
         <div className="flex min-h-screen flex-col items-center justify-center p-4 space-y-8">
-          <h1 className="text-3xl font-bold text-center">
-            No farcaster SDK found, please use this miniapp in the farcaster app
+          <h1 className="text-3xl font-bold text-center text-green-600">
+            🌾 Monad Farming Simulator
           </h1>
           <div className="text-center space-y-4">
-            <p className="text-gray-600">For testing purposes, you can:</p>
+            <p className="text-gray-600">Loading your farm...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
             <div className="space-y-2">
-              <p>📱 <strong>Test in Farcaster app:</strong></p>
-              <p className="text-sm bg-gray-100 p-2 rounded">https://difference-profit-delay-habitat.trycloudflare.com</p>
-              <p>🛠️ <strong>Or test embed preview:</strong></p>
-              <a 
-                href="https://warpcast.com/~/developers/mini-apps/embed" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                Farcaster Embed Tool
-              </a>
+              <p className="text-sm text-gray-500">If loading takes too long, try refreshing</p>
             </div>
           </div>
         </div>

@@ -77,11 +77,14 @@ export function FrameProvider({ children }: FrameProviderProps) {
   const isReady = farcasterContextQuery.data?.isReady ?? false
   const context = farcasterContextQuery.data?.context
 
+  // For development, allow the app to load even if SDK isn't fully ready
+  const isSDKLoaded = isReady && Boolean(context) || process.env.NODE_ENV === 'development'
+
   console.log('FrameProvider state:', {
     isLoading: farcasterContextQuery.isPending,
     isReady,
     hasContext: Boolean(context),
-    isSDKLoaded: isReady && Boolean(context)
+    isSDKLoaded
   })
 
   return (
