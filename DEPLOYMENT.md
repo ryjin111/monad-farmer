@@ -1,188 +1,179 @@
-# 🚀 Deploying Your Monad Farming Simulator Mini App
+# 🚀 Deployment Guide
 
-This guide will walk you through deploying your farming simulator mini app to Farcaster following the official guidelines.
+This guide covers deploying both the frontend mini-app and the smart contracts.
 
-## 📋 Prerequisites
+## 📁 Project Structure
 
-- Node.js 18+ installed
-- A GitHub account
-- A Vercel account (recommended for easy deployment)
-- Farcaster account with Developer mode enabled
-
-## 🛠️ Step 1: Prepare Your Environment
-
-1. **Create environment file:**
-   ```bash
-   cp .env.example .env.local
-   ```
-
-2. **Add your deployment URL to `.env.local`:**
-   ```bash
-   NEXT_PUBLIC_URL=https://your-farming-simulator.vercel.app
-   ```
-
-## 🌐 Step 2: Deploy to Vercel (Recommended)
-
-1. **Push your code to GitHub:**
-   ```bash
-   git add .
-   git commit -m "Add Monad Farming Simulator mini app"
-   git push origin main
-   ```
-
-2. **Deploy to Vercel:**
-   - Go to [vercel.com](https://vercel.com)
-   - Connect your GitHub repository
-   - Import your project
-   - Set environment variable: `NEXT_PUBLIC_URL` = your Vercel URL
-   - Deploy!
-
-3. **Update your `.env.local`:**
-   ```bash
-   NEXT_PUBLIC_URL=https://your-project-name.vercel.app
-   ```
-
-## 🧪 Step 3: Test with Farcaster Embed Tool
-
-1. **Install cloudflared (for local testing):**
-   ```bash
-   # macOS
-   brew install cloudflared
-   
-   # Windows
-   # Download from: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/
-   ```
-
-2. **Expose your local server:**
-   ```bash
-   cloudflared tunnel --url http://localhost:3000
-   ```
-
-3. **Test in Farcaster Embed Tool:**
-   - Go to [Farcaster Embed Tool](https://warpcast.com/~/developers/mini-apps/embed)
-   - Enter your cloudflared URL
-   - Test the mini app functionality
-
-## 🎨 Step 4: Customize App Images
-
-Replace the images in `public/images/` with your farming simulator branding:
-
-- `feed.png` - Embed preview image (3:2 ratio recommended)
-- `splash.png` - Splash screen icon (200x200px)
-- `icon.png` - App store icon
-
-## 📱 Step 5: Update Farcaster Configuration
-
-Update `app/.well-known/farcaster.json/route.ts`:
-
-```typescript
-const appUrl = process.env.NEXT_PUBLIC_URL;
-const farcasterConfig = {
-    accountAssociation: {
-        "header": "",
-        "payload": "",
-        "signature": ""
-    },
-    frame: {
-        version: "1",
-        name: "Monad Farming Simulator",
-        iconUrl: `${appUrl}/images/icon.png`,
-        homeUrl: `${appUrl}`,
-        imageUrl: `${appUrl}/images/feed.png`,
-        screenshotUrls: [], // Add screenshots of your app
-        tags: ["monad", "farcaster", "miniapp", "farming", "game"],
-        primaryCategory: "games",
-        buttonTitle: "🌾 Start Farming",
-        splashImageUrl: `${appUrl}/images/splash.png`,
-        splashBackgroundColor: "#f0f9ff",
-    }
-};
+```
+Monad/
+├── app/                    # Next.js frontend
+├── components/            # React components
+├── lib/                   # Frontend utilities
+├── hardhat-contracts/     # Smart contracts (separate folder)
+│   ├── contracts/         # Solidity contracts
+│   ├── scripts/           # Deployment scripts
+│   └── README.md          # Contract documentation
+└── README.md              # Main project documentation
 ```
 
-## 🔐 Step 6: Generate Account Association
+## 🎯 Frontend Deployment (Vercel)
 
-1. **Enable Developer Mode in Farcaster:**
-   - Open Farcaster app
-   - Go to Settings > Advanced
-   - Scroll down and enable Developer mode
+### 1. Deploy to Vercel
 
-2. **Generate Domain Manifest:**
-   - Go to Settings > Developer > Domains
-   - Enter your deployment domain (e.g., `your-app.vercel.app`)
-   - Click "Generate Domain Manifest"
-   - Copy the generated `accountAssociation` data
-
-3. **Update your `farcaster.json`:**
-   - Replace the empty `accountAssociation` with the generated data
-
-## 📤 Step 7: Publish Your Mini App
-
-1. **Deploy final version:**
+1. **Push to GitHub**
    ```bash
    git add .
-   git commit -m "Update Farcaster configuration"
+   git commit -m "Ready for deployment"
    git push origin main
    ```
 
-2. **Verify deployment:**
-   - Check your Vercel deployment is live
-   - Test all functionality
-   - Verify Farcaster integration works
+2. **Connect to Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Deploy automatically
 
-3. **Share your Mini App:**
-   - Share your app URL on Farcaster
-   - Users can now discover and use your farming simulator!
+3. **Set Environment Variables**
+   ```bash
+   NEXT_PUBLIC_URL=https://your-app.vercel.app
+   ```
 
-## 🎯 Testing Checklist
+### 2. Configure Farcaster Redirect
 
-- [ ] App loads correctly in Farcaster
-- [ ] Farm grid is interactive
-- [ ] Planting and harvesting works
-- [ ] Shop and inventory function properly
-- [ ] Achievements unlock correctly
-- [ ] Social sharing works
-- [ ] Game state persists
-- [ ] All tabs navigate properly
+Update `vercel.json` with your Farcaster hosted manifest URL:
 
-## 🐛 Troubleshooting
+```json
+{
+  "redirects": [
+    {
+      "source": "/.well-known/farcaster.json",
+      "destination": "https://api.farcaster.xyz/miniapps/hosted-manifest/YOUR_MANIFEST_ID",
+      "permanent": false
+    }
+  ]
+}
+```
 
-### Common Issues:
+## ⛓️ Smart Contract Deployment
 
-1. **App not loading:**
-   - Check `NEXT_PUBLIC_URL` is correct
-   - Verify deployment is live
-   - Check browser console for errors
+### 1. Navigate to Contracts Folder
 
-2. **Farcaster actions not working:**
-   - Ensure you're testing in Farcaster app
-   - Check `useFrame` hook is properly connected
-   - Verify account association is set
+```bash
+cd hardhat-contracts
+```
 
-3. **Images not showing:**
-   - Check image paths in `public/images/`
-   - Verify image URLs are accessible
-   - Ensure correct image dimensions
+### 2. Install Dependencies
 
-## 🎉 Success!
+```bash
+npm install
+```
 
-Your Monad Farming Simulator is now live on Farcaster! Users can:
+### 3. Set Up Environment
 
-- Discover your app through Farcaster
-- Plant and harvest crops
-- Earn achievements
-- Share their progress
-- Enjoy persistent game state
+```bash
+# Create .env file
+echo "PRIVATE_KEY=your_private_key_here" > .env
+```
 
-## 📈 Next Steps
+### 4. Deploy Contract
 
-- Monitor user engagement
-- Gather feedback from the community
-- Consider adding new features
-- Optimize performance
-- Add analytics
+```bash
+npm run deploy
+```
+
+### 5. Update Contract Address
+
+Copy the deployed address and update `lib/contract.ts` in the main project:
+
+```typescript
+export const FARMING_GAME_ADDRESS = '0x...' // Your deployed address
+```
+
+## 🔗 Integration Testing
+
+### 1. Test Smart Contract
+
+```bash
+cd hardhat-contracts
+npm run console
+
+# In console:
+> const contract = await ethers.getContractAt("FarmingGame", "CONTRACT_ADDRESS")
+> await contract.plantCrop(0, 0) // Test planting
+```
+
+### 2. Test Frontend Integration
+
+1. **Visit your deployed app**
+2. **Connect wallet to Monad testnet**
+3. **Try planting, watering, and harvesting**
+4. **Verify transactions on Monad explorer**
+
+## 🌐 Testing with Farcaster
+
+### 1. Local Testing
+
+```bash
+# Start development server
+yarn dev
+
+# Expose with cloudflared
+cloudflared tunnel --url http://localhost:3000
+```
+
+### 2. Farcaster Embed Tool
+
+1. Go to [Farcaster Embed Tool](https://warpcast.com/~/developers/mini-apps/embed)
+2. Enter your app URL
+3. Test all functionality
+
+## 📊 Monitoring
+
+### Frontend
+- **Vercel Analytics**: Monitor app performance
+- **Error Tracking**: Check Vercel logs for issues
+
+### Smart Contracts
+- **Monad Explorer**: Monitor transactions
+- **Contract Events**: Track game activity
+- **Gas Usage**: Optimize for cost efficiency
+
+## 🚨 Troubleshooting
+
+### Frontend Issues
+1. **Build Failures**: Check TypeScript errors
+2. **Environment Variables**: Verify all required vars are set
+3. **Farcaster Integration**: Test with embed tool
+
+### Contract Issues
+1. **Deployment Fails**: Check RPC endpoint and gas
+2. **Transaction Errors**: Verify wallet has testnet MONAD
+3. **Contract Verification**: Use Hardhat verify plugin
+
+### Integration Issues
+1. **Contract Address**: Ensure correct address in frontend
+2. **Network Mismatch**: Verify wallet is on Monad testnet
+3. **RPC Issues**: Check Monad testnet status
+
+## 🔄 Update Process
+
+### Frontend Updates
+1. Make changes
+2. Push to GitHub
+3. Vercel auto-deploys
+
+### Contract Updates
+1. Update contract code
+2. Deploy new version
+3. Update address in frontend
+4. Test integration
+
+## 📚 Resources
+
+- [Monad Documentation](https://docs.monad.xyz/)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Farcaster Mini-Apps](https://docs.farcaster.xyz/developers/mini-apps)
+- [Hardhat Documentation](https://hardhat.org/docs)
 
 ---
 
-**Happy Farming! 🌾🚜**
-
-*Your farming simulator is now part of the Farcaster ecosystem!* 
+**Need Help?** Check the individual README files in each folder! 

@@ -1,6 +1,21 @@
 # 🌾 Monad Farming Simulator
 
-A delightful farming simulator mini app for Farcaster, built on Monad! Grow crops, earn coins, unlock achievements, and share your farming progress with the community.
+A **fully on-chain** farming simulator mini app for Farcaster, built on Monad! Every action - planting, watering, harvesting - is a blockchain transaction. Grow crops, earn coins, unlock achievements, and share your farming progress with the community.
+
+## ⛓️ On-Chain Features
+
+### 🔗 Smart Contract Integration
+- **FarmingGame Contract**: All game logic is stored on Monad testnet
+- **Real Transactions**: Every plant, water, and harvest action is a blockchain transaction
+- **Persistent State**: Your farm progress is permanently stored on-chain
+- **Gas Optimization**: Efficient contract design for minimal transaction costs
+
+### 🎮 Blockchain Game Mechanics
+- **Plot Ownership**: Each player owns 25 plots (5x5 grid) on-chain
+- **Crop Growth**: Growth timers are managed by smart contract
+- **Watering System**: Watering reduces growth time and is tracked on-chain
+- **Economy**: Coins and experience are stored as contract state
+- **Achievements**: Progress tracking through on-chain events
 
 ## 🚀 Features
 
@@ -38,12 +53,23 @@ A delightful farming simulator mini app for Farcaster, built on Monad! Grow crop
 
 ## 🎯 How to Play
 
-1. **Start Farming**: Click on empty plots to plant seeds
-2. **Water Crops**: Click on planted crops to water them
-3. **Harvest**: Click on fully grown crops to harvest them
-4. **Sell Crops**: Visit the shop to sell your harvested crops
-5. **Buy Seeds**: Purchase new seeds to expand your farm
-6. **Share Progress**: Use social features to share your achievements
+1. **Connect Wallet**: Connect your wallet to Monad testnet
+2. **Get Testnet MONAD**: Get testnet tokens from the faucet for gas fees
+3. **Start Farming**: Click on empty plots to plant seeds (on-chain transaction)
+4. **Water Crops**: Click on planted crops to water them (on-chain transaction)
+5. **Harvest**: Click on fully grown crops to harvest them (on-chain transaction)
+6. **Sell Crops**: Visit the shop to sell your harvested crops
+7. **Buy Seeds**: Purchase new seeds to expand your farm (on-chain transaction)
+8. **Share Progress**: Use social features to share your achievements
+
+## 🔗 Smart Contract Deployment
+
+Before playing, you need to deploy the FarmingGame contract to Monad testnet:
+
+1. **Navigate to contracts folder**: `cd hardhat-contracts`
+2. **Follow the deployment guide**: See `hardhat-contracts/README.md` for detailed instructions
+3. **Update contract address**: Set the deployed contract address in `lib/contract.ts`
+4. **Test the integration**: Verify all on-chain functions work correctly
 
 ## 🌾 Available Crops
 
@@ -73,12 +99,15 @@ A delightful farming simulator mini app for Farcaster, built on Monad! Grow crop
 - **Tailwind CSS**: Modern styling
 - **Farcaster SDK**: Social integration
 - **Monad**: Blockchain infrastructure
+- **Hardhat**: Smart contract development and deployment
+- **Solidity**: Smart contract language
 
 ### Architecture
-- **Client-side State**: Game state managed with React hooks
-- **Local Storage**: Persistent game progress
-- **Real-time Updates**: Automatic crop growth simulation
+- **Smart Contract**: All game logic stored on Monad testnet
+- **Blockchain State**: Game progress permanently stored on-chain
+- **Real-time Updates**: Automatic crop growth simulation with on-chain verification
 - **Responsive Design**: Works on mobile and desktop
+- **Gas Optimization**: Efficient contract design for minimal transaction costs
 
 ## 🚀 Getting Started
 
