@@ -120,11 +120,11 @@ export const CROPS: Record<string, Omit<Crop, 'id' | 'currentGrowth' | 'plantedA
     rarity: 'rare'
   },
   blueberry: {
-    name: 'Grapes',
+    name: 'Blueberry',
     growthTime: 120,
     sellPrice: 120,
     buyPrice: 45,
-    emoji: '🍇',
+    emoji: '🫐',
     rarity: 'rare'
   },
   goldenApple: {

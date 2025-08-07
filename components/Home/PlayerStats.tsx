@@ -6,7 +6,7 @@ import { CropType, contractHelpers } from '@/lib/contract'
 import { CROPS } from '@/types'
 
 export function PlayerStats() {
-  const { player, buySeeds, getCropCount, isLoading } = useFarmingContract()
+  const { player, buySeeds, isLoading } = useFarmingContract()
   const [showShop, setShowShop] = useState(false)
   const [showInventory, setShowInventory] = useState(false)
 

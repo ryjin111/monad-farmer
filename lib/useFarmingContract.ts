@@ -118,6 +118,7 @@ export function useFarmingContract() {
         fetch(`/api/plot?address=${address}&plotId=${i}`)
           .then(res => res.json())
           .then(data => data.plot)
+          .catch(() => null)
       )
 
       const plotResults = await Promise.all(plotPromises)
@@ -126,53 +127,6 @@ export function useFarmingContract() {
     } catch (error) {
       console.error('Error loading plots:', error)
     }
-  }
-
-  // Get individual plot
-  const getPlot = (plotId: number) => {
-    const { data } = useReadContract({
-      ...contractConfig,
-      functionName: 'getPlot',
-      args: [address!, BigInt(plotId)],
-      query: {
-        enabled: !!address,
-        refetchInterval: 5000,
-      },
-    })
-    return data
-  }
-
-  // Get crop count for player
-  const getCropCount = (cropType: CropType) => {
-    const { data } = useReadContract({
-      ...contractConfig,
-      functionName: 'getCropCount',
-      args: [address!, cropType],
-      query: {
-        enabled: !!address,
-        refetchInterval: 5000,
-      },
-    })
-    return data
-  }
-
-  // Get crop prices
-  const getCropSeedPrice = (cropType: CropType) => {
-    const { data } = useReadContract({
-      ...contractConfig,
-      functionName: 'cropSeedPrices',
-      args: [cropType],
-    })
-    return data
-  }
-
-  const getCropSellPrice = (cropType: CropType) => {
-    const { data } = useReadContract({
-      ...contractConfig,
-      functionName: 'cropSellPrices',
-      args: [cropType],
-    })
-    return data
   }
 
   // Update player data when transaction succeeds
@@ -198,6 +152,13 @@ export function useFarmingContract() {
     }
   }, [playerData])
 
+  // Load plots when address changes
+  useEffect(() => {
+    if (address) {
+      loadPlots()
+    }
+  }, [address])
+
   return {
     // State
     plots,
@@ -212,11 +173,6 @@ export function useFarmingContract() {
     harvestCrop,
     buySeeds,
     loadPlots,
-    getPlot,
-    getCropCount,
-    getCropSeedPrice,
-    getCropSellPrice,
-    refetchPlayer,
 
     // Transaction status
     hash,
@@ -224,79 +180,4 @@ export function useFarmingContract() {
     isConfirming,
     isSuccess,
   }
-}
-
-// Helper hook for individual plot data
-export function usePlot(plotId: number) {
-  const { address } = useAccount()
-  
-  const { data: plotData, isLoading, refetch } = useReadContract({
-    ...contractConfig,
-    functionName: 'getPlot',
-    args: [address!, BigInt(plotId)],
-    query: {
-      enabled: !!address,
-      refetchInterval: 5000,
-    },
-  })
-
-  return {
-    plot: plotData,
-    isLoading,
-    refetch,
-  }
-}
-
-// Helper hook for crop prices
-export function useCropPrices() {
-  const [prices, setPrices] = useState<{
-    seedPrices: Record<CropType, bigint>
-    sellPrices: Record<CropType, bigint>
-  }>({
-    seedPrices: {} as Record<CropType, bigint>,
-    sellPrices: {} as Record<CropType, bigint>,
-  })
-
-  useEffect(() => {
-    const loadPrices = async () => {
-      const cropTypes = Object.values(CropType).filter(v => typeof v === 'number') as CropType[]
-      
-      const seedPricePromises = cropTypes.map(cropType =>
-        useReadContract({
-          ...contractConfig,
-          functionName: 'cropSeedPrices',
-          args: [cropType],
-        })
-      )
-
-      const sellPricePromises = cropTypes.map(cropType =>
-        useReadContract({
-          ...contractConfig,
-          functionName: 'cropSellPrices',
-          args: [cropType],
-        })
-      )
-
-      try {
-        const seedResults = await Promise.all(seedPricePromises.map(p => p.data))
-        const sellResults = await Promise.all(sellPricePromises.map(p => p.data))
-
-        const seedPrices: Record<CropType, bigint> = {} as Record<CropType, bigint>
-        const sellPrices: Record<CropType, bigint> = {} as Record<CropType, bigint>
-
-        cropTypes.forEach((cropType, index) => {
-          if (seedResults[index]) seedPrices[cropType] = seedResults[index]!
-          if (sellResults[index]) sellPrices[cropType] = sellResults[index]!
-        })
-
-        setPrices({ seedPrices, sellPrices })
-      } catch (error) {
-        console.error('Error loading crop prices:', error)
-      }
-    }
-
-    loadPrices()
-  }, [])
-
-  return prices
 } 
