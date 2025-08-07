@@ -165,9 +165,10 @@ export function FarmGrid() {
             </div>
             <button
               onClick={() => setShowSeedSelector(false)}
-              className="mt-4 w-full bg-gray-200 hover:bg-gray-300 py-2 rounded-lg transition-colors"
+              className="mt-4 w-full bg-gradient-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 text-white py-3 px-4 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2"
             >
-              Cancel
+              <span>❌</span>
+              <span>Cancel</span>
             </button>
           </div>
         </div>

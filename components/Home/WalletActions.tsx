@@ -11,7 +11,7 @@ import {
 export function WalletActions() {
   const { isEthProviderAvailable, isSDKLoaded } = useFrame()
   const { isConnected, address, chainId } = useAccount()
-  const { disconnect } = useDisconnect()
+  const { disconnect, isPending: isDisconnecting } = useDisconnect()
   const { switchChain } = useSwitchChain()
   const { connect, error: connectError, isPending: isConnecting } = useConnect()
 
@@ -28,6 +28,16 @@ export function WalletActions() {
       console.log('Connect call completed')
     } catch (error) {
       console.error('Wallet connection error:', error)
+    }
+  }
+
+  const handleDisconnect = async () => {
+    try {
+      console.log('Attempting to disconnect wallet...')
+      await disconnect()
+      console.log('Disconnect call completed')
+    } catch (error) {
+      console.error('Wallet disconnection error:', error)
     }
   }
 
@@ -62,10 +72,11 @@ export function WalletActions() {
 
         <button
           type="button"
-          className="w-full bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 text-sm font-medium transition-colors"
-          onClick={() => disconnect()}
+          className="w-full bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 text-sm font-medium disabled:opacity-50 transition-colors"
+          onClick={handleDisconnect}
+          disabled={isDisconnecting}
         >
-          Disconnect Wallet
+          {isDisconnecting ? '🔄 Disconnecting...' : '❌ Disconnect Wallet'}
         </button>
       </div>
     )
