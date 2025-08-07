@@ -6,9 +6,10 @@ import { PlayerStats } from '@/components/Home/PlayerStats'
 import { Achievements } from '@/components/Home/Achievements'
 import { FarmingSocial } from '@/components/Home/FarmingSocial'
 import { WalletActions } from '@/components/Home/WalletActions'
+import { BuyCoins } from '@/components/Home/BuyCoins'
 
 export function Demo() {
-  const [activeTab, setActiveTab] = useState<'farm' | 'stats' | 'achievements' | 'social'>('farm')
+  const [activeTab, setActiveTab] = useState<'farm' | 'stats' | 'achievements' | 'social' | 'buy'>('farm')
 
   return (
     <div className="flex min-h-screen flex-col p-4 space-y-4">
@@ -22,7 +23,6 @@ export function Demo() {
 
       {/* Wallet Connection */}
       <WalletActions />
-
 
       {/* Tab Navigation */}
       <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
@@ -66,6 +66,16 @@ export function Demo() {
         >
           📱 Social
         </button>
+        <button
+          onClick={() => setActiveTab('buy')}
+          className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+            activeTab === 'buy' 
+              ? 'bg-white text-green-600 shadow-sm' 
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          💰 Buy
+        </button>
       </div>
 
       {/* Tab Content */}
@@ -74,9 +84,8 @@ export function Demo() {
         {activeTab === 'stats' && <PlayerStats />}
         {activeTab === 'achievements' && <Achievements />}
         {activeTab === 'social' && <FarmingSocial />}
+        {activeTab === 'buy' && <BuyCoins />}
       </div>
-
-
     </div>
   )
 }
