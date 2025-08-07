@@ -1,7 +1,7 @@
 import { useFrame } from '@/components/farcaster-provider'
 import { farcasterMiniApp as miniAppConnector } from '@farcaster/miniapp-wagmi-connector'
 import { parseEther } from 'viem'
-import { monadTestnet } from 'viem/chains'
+import { monadTestnet } from 'wagmi/chains'
 import {
   useAccount,
   useConnect,
@@ -11,18 +11,34 @@ import {
 } from 'wagmi'
 
 export function WalletActions() {
-  const { isEthProviderAvailable } = useFrame()
+  const { isEthProviderAvailable, isSDKLoaded } = useFrame()
   const { isConnected, address, chainId } = useAccount()
   const { disconnect } = useDisconnect()
   const { data: hash, sendTransaction } = useSendTransaction()
   const { switchChain } = useSwitchChain()
-  const { connect } = useConnect()
+  const { connect, error: connectError, isPending: isConnecting } = useConnect()
 
   async function sendTransactionHandler() {
     sendTransaction({
       to: '0x7f748f154B6D180D35fA12460C7E4C631e28A9d7',
       value: parseEther('1'),
     })
+  }
+
+  const handleConnect = async () => {
+    try {
+      console.log('Attempting to connect wallet...')
+      console.log('isEthProviderAvailable:', isEthProviderAvailable)
+      console.log('isSDKLoaded:', isSDKLoaded)
+      
+      const connector = miniAppConnector()
+      console.log('Connector created:', connector)
+      
+      await connect({ connector })
+      console.log('Connect call completed')
+    } catch (error) {
+      console.error('Wallet connection error:', error)
+    }
   }
 
   if (isConnected) {
@@ -93,18 +109,31 @@ export function WalletActions() {
     )
   }
 
-  if (isEthProviderAvailable) {
+  // Show connect button if SDK is loaded (even if ethProvider is not available)
+  if (isSDKLoaded) {
     return (
       <div className="space-y-4 border border-[#333] rounded-md p-4">
         <h2 className="text-xl font-bold text-left">sdk.wallet.ethProvider</h2>
         <div className="flex flex-row space-x-4 justify-start items-start">
-          <button
-            type="button"
-            className="bg-white text-black w-full rounded-md p-2 text-sm"
-            onClick={() => connect({ connector: miniAppConnector() })}
-          >
-            Connect Wallet
-          </button>
+          <div className="flex flex-col space-y-4 justify-start w-full">
+            <button
+              type="button"
+              className="bg-white text-black w-full rounded-md p-2 text-sm disabled:opacity-50"
+              onClick={handleConnect}
+              disabled={isConnecting}
+            >
+              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+            </button>
+            {connectError && (
+              <p className="text-sm text-red-500 text-left">
+                Connection error: {connectError.message}
+              </p>
+            )}
+            <p className="text-sm text-gray-500 text-left">
+              SDK Status: {isSDKLoaded ? 'Loaded' : 'Loading...'} | 
+              Eth Provider: {isEthProviderAvailable ? 'Available' : 'Not Available'}
+            </p>
+          </div>
         </div>
       </div>
     )
@@ -114,7 +143,7 @@ export function WalletActions() {
     <div className="space-y-4 border border-[#333] rounded-md p-4">
       <h2 className="text-xl font-bold text-left">sdk.wallet.ethProvider</h2>
       <div className="flex flex-row space-x-4 justify-start items-start">
-        <p className="text-sm text-left">Wallet connection only via Warpcast</p>
+        <p className="text-sm text-left">Loading Farcaster SDK...</p>
       </div>
     </div>
   )

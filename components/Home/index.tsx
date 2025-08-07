@@ -5,6 +5,7 @@ import { FarmGrid } from '@/components/Home/FarmGrid'
 import { PlayerStats } from '@/components/Home/PlayerStats'
 import { Achievements } from '@/components/Home/Achievements'
 import { FarmingSocial } from '@/components/Home/FarmingSocial'
+import { WalletActions } from '@/components/Home/WalletActions'
 
 export function Demo() {
   const [activeTab, setActiveTab] = useState<'farm' | 'stats' | 'achievements' | 'social'>('farm')
@@ -19,6 +20,8 @@ export function Demo() {
         <p className="text-gray-600">Grow crops, earn coins, and share your progress!</p>
       </div>
 
+      {/* Wallet Connection */}
+      <WalletActions />
 
 
       {/* Tab Navigation */}
