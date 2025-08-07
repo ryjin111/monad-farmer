@@ -1,0 +1,15 @@
+{
+  "frame": {
+    "version": "1",
+    "name": "Monad Farming Simulator",
+    "iconUrl": "https://blake-describes-bill-ul.trycloudflare.com/images/icon.png",
+    "homeUrl": "https://blake-describes-bill-ul.trycloudflare.com",
+    "imageUrl": "https://blake-describes-bill-ul.trycloudflare.com/images/feed.png",
+    "screenshotUrls": [],
+    "tags": ["monad", "farcaster", "miniapp", "farming", "game", "simulator"],
+    "primaryCategory": "games",
+    "buttonTitle": "🌾 Start Farming",
+    "splashImageUrl": "https://blake-describes-bill-ul.trycloudflare.com/images/splash.png",
+    "splashBackgroundColor": "#f0f9ff"
+  }
+} 
