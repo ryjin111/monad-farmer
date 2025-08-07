@@ -5,10 +5,8 @@ import { FarmGrid } from '@/components/Home/FarmGrid'
 import { PlayerStats } from '@/components/Home/PlayerStats'
 import { Achievements } from '@/components/Home/Achievements'
 import { FarmingSocial } from '@/components/Home/FarmingSocial'
-import { useGameState } from '@/lib/game'
 
 export function Demo() {
-  const { resetGame } = useGameState()
   const [activeTab, setActiveTab] = useState<'farm' | 'stats' | 'achievements' | 'social'>('farm')
 
   return (
@@ -75,15 +73,7 @@ export function Demo() {
         {activeTab === 'social' && <FarmingSocial />}
       </div>
 
-      {/* Reset Game Button */}
-      <div className="text-center">
-        <button
-          onClick={resetGame}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors text-sm"
-        >
-          🔄 Reset Game
-        </button>
-      </div>
+
     </div>
   )
 }
