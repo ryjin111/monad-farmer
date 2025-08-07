@@ -123,6 +123,9 @@ export function PlayerStats() {
               <div className="text-4xl mb-2">🌾</div>
               <div>Your harvested crops are stored on-chain!</div>
               <div className="text-sm mt-2">Check your farm to see what you've grown.</div>
+              <div className="text-xs mt-2 text-gray-400">
+                All data is permanently stored on the Monad blockchain
+              </div>
             </div>
           </div>
         </div>

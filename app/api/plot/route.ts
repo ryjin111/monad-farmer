@@ -4,17 +4,17 @@ import { FARMING_GAME_ABI, FARMING_GAME_ADDRESS } from '@/lib/contract'
 
 // Define Monad testnet configuration
 const monadTestnet = {
-  id: 1337,
+  id: 10143,
   name: 'Monad Testnet',
   network: 'monad-testnet',
   nativeCurrency: {
     decimals: 18,
     name: 'MONAD',
-    symbol: 'MONAD',
+    symbol: 'MON',
   },
   rpcUrls: {
-    default: { http: ['https://rpc.testnet.monad.xyz'] },
-    public: { http: ['https://rpc.testnet.monad.xyz'] },
+    default: { http: ['https://testnet-rpc.monad.xyz'] },
+    public: { http: ['https://testnet-rpc.monad.xyz'] },
   },
 } as const
 
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
     const plot = {
       cropType: Number(cropType),
-      state: Number(state),
+      state: Number(state) as any, // Convert to PlotState enum
       plantedAt,
       lastWatered,
       growthTime,

@@ -54,6 +54,8 @@ export function BuyCoins() {
           errorMessage = 'Transaction was cancelled by user.'
         } else if (error.message.includes('network')) {
           errorMessage = 'Network error. Please check your connection.'
+        } else if (error.message.includes('contract')) {
+          errorMessage = 'Contract error. Please check if you have enough MONAD for gas fees.'
         } else {
           errorMessage = `Transaction failed: ${error.message}`
         }

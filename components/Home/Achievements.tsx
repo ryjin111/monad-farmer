@@ -41,7 +41,7 @@ export function Achievements() {
       name: 'Golden Harvest',
       description: 'Harvest a legendary crop (Golden Apple)',
       emoji: '⭐',
-      isUnlocked: false, // This requires crop count tracking
+      isUnlocked: false, // This requires crop count tracking from contract
       requirement: 1,
       current: 0
     },
@@ -88,7 +88,6 @@ export function Achievements() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-gray-800">🏆 Achievements</h2>
       
       {/* Unlocked Achievements */}
       {unlockedAchievements.length > 0 && (

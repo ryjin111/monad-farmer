@@ -1,6 +1,5 @@
 import { useFrame } from '@/components/farcaster-provider'
 import { farcasterMiniApp as miniAppConnector } from '@farcaster/miniapp-wagmi-connector'
-import { monadTestnet } from 'wagmi/chains'
 import {
   useAccount,
   useConnect,
@@ -21,26 +20,9 @@ export function WalletActions() {
       console.log('isEthProviderAvailable:', isEthProviderAvailable)
       console.log('isSDKLoaded:', isSDKLoaded)
       
-      // Check if we're in a Farcaster environment
-      if (typeof window !== 'undefined' && (window as any).farcaster) {
-        console.log('Farcaster environment detected')
-        
-        // Try to use the Farcaster wallet provider directly
-        if (isEthProviderAvailable) {
-          console.log('Using Farcaster ethProvider')
-          const connector = miniAppConnector()
-          await connect({ connector })
-        } else {
-          console.log('Farcaster ethProvider not available, trying alternative connection')
-          // Fallback to regular connector
-          const connector = miniAppConnector()
-          await connect({ connector })
-        }
-      } else {
-        console.log('Not in Farcaster environment, using regular connector')
-        const connector = miniAppConnector()
-        await connect({ connector })
-      }
+      // Always try to connect with the Farcaster connector
+      const connector = miniAppConnector()
+      await connect({ connector })
       
       console.log('Connect call completed')
     } catch (error) {
@@ -75,7 +57,7 @@ export function WalletActions() {
             </p>
           <p className="text-sm text-green-700">
             Chain ID: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{chainId}</span>
-            {chainId === 8453 && <span className="text-green-600 ml-2">✓ Monad Testnet</span>}
+            {chainId === 10143 && <span className="text-green-600 ml-2">✓ Monad Testnet</span>}
           </p>
         </div>
 

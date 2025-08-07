@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useFarmingContract } from '@/lib/useFarmingContract'
 import { CropType, PlotState, contractHelpers } from '@/lib/contract'
-import { CROPS } from '@/types'
 
 export function FarmGrid() {
   const { 
@@ -124,6 +123,9 @@ export function FarmGrid() {
           <div className="text-gray-600">Loading farm data...</div>
           <div className="mt-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+          </div>
+          <div className="text-sm text-gray-500 mt-2">
+            This may take a few seconds...
           </div>
         </div>
       </div>

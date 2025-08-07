@@ -18,8 +18,8 @@ export function FarmingSocial() {
     }
 
     // Use on-chain data instead of client-side data
-    const plantedPlots = plots.filter(plot => plot.state !== 0).length // 0 = EMPTY
-    const readyToHarvest = plots.filter(plot => plot.isReady).length
+    const plantedPlots = plots.filter(plot => plot && plot.state !== 0).length // 0 = EMPTY
+    const readyToHarvest = plots.filter(plot => plot && plot.isReady).length
     
     const message = `🌾 Monad Farming Simulator Progress! 🌾
 
@@ -36,12 +36,18 @@ Farming on the Monad blockchain! 🚜
 #MonadFarming #Monad #Farcaster #BlockchainGaming`
 
     try {
-      await actions?.composeCast({
-        text: message,
-        embeds: []
-      })
+      if (actions?.composeCast) {
+        await actions.composeCast({
+          text: message,
+          embeds: []
+        })
+      } else {
+        // Fallback for non-Farcaster environments
+        alert('Sharing is only available in Farcaster. Your progress:\n\n' + message)
+      }
     } catch (error) {
       console.error('Failed to compose cast:', error)
+      alert('Failed to share progress. Please try again.')
     }
   }
 

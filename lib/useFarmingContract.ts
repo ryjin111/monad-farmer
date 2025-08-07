@@ -162,9 +162,17 @@ export function useFarmingContract() {
       )
 
       const plotResults = await Promise.all(plotPromises)
-      const validPlots = plotResults.filter(Boolean) as OnChainPlot[]
-      console.log('Loaded plots:', validPlots.length)
-      setPlots(validPlots)
+      
+      // Create a properly indexed array of plots
+      const plotsArray = new Array(25).fill(null)
+      plotResults.forEach((plot, index) => {
+        if (plot) {
+          plotsArray[index] = plot
+        }
+      })
+      
+      console.log('Loaded plots:', plotsArray.filter(Boolean).length)
+      setPlots(plotsArray)
     } catch (error) {
       console.error('Error loading plots:', error)
     }
@@ -173,11 +181,12 @@ export function useFarmingContract() {
   // Update player data when transaction succeeds
   useEffect(() => {
     if (isSuccess) {
+      console.log('Transaction successful, refreshing data...')
       refetchPlayer()
       loadPlots()
       setIsLoading(false)
     }
-  }, [isSuccess, refetchPlayer])
+  }, [isSuccess, refetchPlayer, loadPlots])
 
   // Update player state when data changes
   useEffect(() => {
