@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPublicClient, http } from 'viem'
-import { monadTestnet } from 'wagmi/chains'
 import { FARMING_GAME_ABI, FARMING_GAME_ADDRESS } from '@/lib/contract'
+
+// Define Monad testnet configuration
+const monadTestnet = {
+  id: 1337,
+  name: 'Monad Testnet',
+  network: 'monad-testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'MONAD',
+    symbol: 'MONAD',
+  },
+  rpcUrls: {
+    default: { http: ['https://rpc.testnet.monad.xyz'] },
+    public: { http: ['https://rpc.testnet.monad.xyz'] },
+  },
+} as const
 
 const client = createPublicClient({
   chain: monadTestnet,
@@ -18,6 +33,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    console.log(`Fetching plot data for address: ${address}, plotId: ${plotId}`)
+    console.log(`Contract address: ${FARMING_GAME_ADDRESS}`)
+    
     const plotData = await client.readContract({
       address: FARMING_GAME_ADDRESS as `0x${string}`,
       abi: FARMING_GAME_ABI,
@@ -25,25 +43,39 @@ export async function GET(request: NextRequest) {
       args: [address as `0x${string}`, BigInt(plotId)],
     })
 
+    console.log('Plot data received:', plotData)
+
     if (!plotData) {
       return NextResponse.json({ error: 'Plot not found' }, { status: 404 })
     }
 
     const [cropType, state, plantedAt, lastWatered, growthTime, isWatered, isReady] = plotData
 
-    return NextResponse.json({
-      plot: {
-        cropType: Number(cropType),
-        state: Number(state),
-        plantedAt,
-        lastWatered,
-        growthTime,
-        isWatered,
-        isReady,
-      }
-    })
+    const plot = {
+      cropType: Number(cropType),
+      state: Number(state),
+      plantedAt,
+      lastWatered,
+      growthTime,
+      isWatered,
+      isReady,
+    }
+
+    console.log('Processed plot data:', plot)
+
+    return NextResponse.json({ plot })
   } catch (error) {
     console.error('Error fetching plot data:', error)
-    return NextResponse.json({ error: 'Failed to fetch plot data' }, { status: 500 })
+    console.error('Error details:', {
+      address,
+      plotId,
+      contractAddress: FARMING_GAME_ADDRESS,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : undefined
+    })
+    return NextResponse.json({ 
+      error: 'Failed to fetch plot data',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 } 

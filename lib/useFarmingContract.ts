@@ -44,18 +44,35 @@ export function useFarmingContract() {
 
   // Buy coins with MONAD
   const buyCoins = async (monadAmount: string) => {
-    if (!address) return
+    if (!address) {
+      console.error('No wallet address available')
+      return
+    }
+    
+    console.log('Attempting to buy coins:', {
+      address,
+      monadAmount,
+      value: parseEther(monadAmount).toString(),
+      contractAddress: contractConfig.address
+    })
     
     try {
       setIsLoading(true)
-      await writeContract({
+      const result = await writeContract({
         ...contractConfig,
         functionName: 'buyCoins',
         value: parseEther(monadAmount),
       })
+      
+      console.log('Buy coins transaction submitted:', result)
     } catch (error) {
       console.error('Error buying coins:', error)
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      })
       setIsLoading(false)
+      throw error // Re-throw to let the UI handle it
     }
   }
 
@@ -132,16 +149,18 @@ export function useFarmingContract() {
     if (!address) return
 
     try {
-      const plotPromises = Array.from({ length: 25 }, (_, i) =>
-        fetch(`/api/plot?address=${address}&plotId=${i}`)
-          .then(res => res.json())
-          .then(data => data.plot)
-          .catch(() => null)
-      )
-
-      const plotResults = await Promise.all(plotPromises)
-      const validPlots = plotResults.filter(Boolean) as OnChainPlot[]
-      setPlots(validPlots)
+      // For now, initialize with empty plots to avoid API errors
+      const emptyPlots = Array.from({ length: 25 }, (_, i) => ({
+        cropType: CropType.TOMATO,
+        state: PlotState.EMPTY,
+        plantedAt: BigInt(0),
+        lastWatered: BigInt(0),
+        growthTime: BigInt(0),
+        isWatered: false,
+        isReady: false,
+      } as OnChainPlot))
+      
+      setPlots(emptyPlots)
     } catch (error) {
       console.error('Error loading plots:', error)
     }

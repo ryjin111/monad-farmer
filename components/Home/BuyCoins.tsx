@@ -25,17 +25,41 @@ export function BuyCoins() {
       return
     }
 
+    console.log('BuyCoins component - starting transaction:', {
+      isConnected,
+      address,
+      monadAmount,
+      playerCoins: player ? Number(player.coins) : 0
+    })
+
     setIsProcessing(true)
     
     try {
       // Call the real smart contract function
       await buyCoins(monadAmount)
       
+      console.log('BuyCoins component - transaction successful')
+      
       // Reset form after successful transaction
       setMonadAmount('1')
     } catch (error) {
-      console.error('Error buying coins:', error)
-      alert('Failed to buy coins. Please try again.')
+      console.error('BuyCoins component - error:', error)
+      
+      let errorMessage = 'Failed to buy coins. Please try again.'
+      
+      if (error instanceof Error) {
+        if (error.message.includes('insufficient funds')) {
+          errorMessage = 'Insufficient MONAD balance. Please check your wallet.'
+        } else if (error.message.includes('user rejected')) {
+          errorMessage = 'Transaction was cancelled by user.'
+        } else if (error.message.includes('network')) {
+          errorMessage = 'Network error. Please check your connection.'
+        } else {
+          errorMessage = `Transaction failed: ${error.message}`
+        }
+      }
+      
+      alert(errorMessage)
     } finally {
       setIsProcessing(false)
     }
