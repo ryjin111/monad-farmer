@@ -174,27 +174,36 @@ export function FarmGrid() {
             <div className="grid grid-cols-2 gap-3">
               {Object.entries(CROPS).map(([key, crop]) => {
                 const cropType = CropType[key.toUpperCase() as keyof typeof CropType]
-                const canPlant = player && player.coins >= crop.buyPrice
+                const canPlant = player && Number(player.coins) >= crop.buyPrice
 
                 return (
-                  <button
-                    key={key}
-                    onClick={() => canPlant && handleSeedSelect(cropType)}
-                    disabled={!canPlant}
-                    className={`
-                      p-3 rounded-lg border-2 text-center transition-all
-                      ${canPlant 
-                        ? 'border-green-300 hover:border-green-500 hover:bg-green-50' 
-                        : 'border-gray-200 bg-gray-50 text-gray-400'
-                      }
-                    `}
-                  >
-                    <div className="text-2xl mb-1">{crop.emoji}</div>
-                    <div className="text-sm font-medium">{crop.name}</div>
-                    <div className="text-xs text-gray-500">
-                      {crop.buyPrice} coins
-                    </div>
-                  </button>
+                  <div key={key} className="relative">
+                    <button
+                      onClick={() => canPlant ? handleSeedSelect(cropType) : setInsufficientCoinsError(`Not enough coins! You need ${crop.buyPrice} coins to buy ${crop.name} seeds. You have ${Number(player?.coins || 0)} coins.`)}
+                      disabled={!canPlant}
+                      className={`
+                        w-full p-3 rounded-lg border-2 text-center transition-all group
+                        ${canPlant 
+                          ? 'border-green-300 hover:border-green-500 hover:bg-green-50' 
+                          : 'border-gray-200 bg-gray-50 text-gray-400 hover:bg-red-50 hover:border-red-300 cursor-pointer'
+                        }
+                      `}
+                    >
+                      <div className="text-2xl mb-1">{crop.emoji}</div>
+                      <div className="text-sm font-medium">{crop.name}</div>
+                      <div className="text-xs text-gray-500">
+                        {crop.buyPrice} coins
+                      </div>
+                    </button>
+                    
+                    {/* Tooltip for insufficient coins */}
+                    {!canPlant && (
+                      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-red-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        Need {crop.buyPrice} coins
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-red-500"></div>
+                      </div>
+                    )}
+                  </div>
                 )
               })}
             </div>

@@ -6,13 +6,8 @@ import { CropType, contractHelpers } from '@/lib/contract'
 import { CROPS } from '@/types'
 
 export function PlayerStats() {
-  const { player, buySeeds, isLoading } = useFarmingContract()
-  const [showShop, setShowShop] = useState(false)
+  const { player, isLoading } = useFarmingContract()
   const [showInventory, setShowInventory] = useState(false)
-
-  const handleBuySeeds = (cropType: CropType) => {
-    buySeeds(cropType, 1)
-  }
 
   // MONAD to coins conversion: 1 MONAD = 50 coins
   const monadToCoins = (monadAmount: number) => monadAmount * 50
@@ -99,17 +94,21 @@ export function PlayerStats() {
       {/* Action Buttons */}
       <div className="flex space-x-2">
         <button
-          onClick={() => setShowShop(true)}
-          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors"
-        >
-          🛒 Shop
-        </button>
-        <button
           onClick={() => setShowInventory(true)}
           className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors"
         >
           📦 Inventory
         </button>
+      </div>
+      
+      {/* Info Note */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <div className="flex items-center space-x-2">
+          <span className="text-blue-500">💡</span>
+          <span className="text-sm text-blue-700">
+            <strong>Tip:</strong> Buy seeds directly from your farm by clicking on empty plots!
+          </span>
+        </div>
       </div>
 
       {/* Quick Stats Preview */}
@@ -135,56 +134,7 @@ export function PlayerStats() {
         </div>
       </div>
 
-      {/* Shop Modal */}
-      {showShop && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 max-h-96 overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">🛒 Seed Shop</h3>
-              <button
-                onClick={() => setShowShop(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-3">
-              {Object.entries(CROPS).map(([key, crop]) => {
-                const cropType = CropType[key.toUpperCase() as keyof typeof CropType]
-                const canBuy = player && Number(player.coins) >= crop.buyPrice
-                
-                return (
-                  <div key={key} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="text-2xl">{crop.emoji}</div>
-                      <div>
-                        <div className="font-medium">{crop.name}</div>
-                        <div className="text-xs text-gray-500">
-                          Grows in {crop.growthTime}min • Sells for {crop.sellPrice}💰
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleBuySeeds(cropType)}
-                      disabled={!canBuy}
-                      className={`
-                        px-3 py-1 rounded text-sm font-medium transition-colors
-                        ${canBuy
-                          ? 'bg-green-500 hover:bg-green-600 text-white'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }
-                      `}
-                    >
-                      {crop.buyPrice}💰
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Inventory Modal */}
       {showInventory && (
