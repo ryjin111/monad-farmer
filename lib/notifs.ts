@@ -38,7 +38,7 @@ export async function sendFrameNotification({
       notificationId: crypto.randomUUID(),
       title,
       body,
-      targetUrl: APP_URL || "",
+      targetUrl: "https://blake-describes-bill-ul.trycloudflare.com",
       tokens: [notificationDetails.token],
     } satisfies SendNotificationRequest),
   });

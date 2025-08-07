@@ -1,5 +1,5 @@
 import { useFrame } from '@/components/farcaster-provider'
-import { APP_URL } from '@/lib/constants'
+// import { APP_URL } from '@/lib/constants'
 import { useMutation } from '@tanstack/react-query'
 
 export function FarcasterActions() {
@@ -31,7 +31,7 @@ export function FarcasterActions() {
               onClick={() =>
                 actions?.composeCast({
                   text: 'Check out this Monad Farcaster MiniApp Template!',
-                  embeds: [`${APP_URL}`],
+                  embeds: [`https://blake-describes-bill-ul.trycloudflare.com`],
                 })
               }
             >

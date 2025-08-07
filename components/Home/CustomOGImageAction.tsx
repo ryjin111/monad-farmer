@@ -1,5 +1,5 @@
 import { useFrame } from "@/components/farcaster-provider";
-import { APP_URL } from "@/lib/constants";
+// import { APP_URL } from "@/lib/constants";
 
 export default function CustomOGImageAction() {
   const { context, actions } = useFrame();
@@ -9,7 +9,7 @@ export default function CustomOGImageAction() {
   const pfpUrl = context?.user?.pfpUrl;
 
   const handleGenerateCustomOGImage = () => {
-    const ogImageUrl = `${APP_URL}/api/og?username=${username}&image=${pfpUrl}`;
+    const ogImageUrl = `https://blake-describes-bill-ul.trycloudflare.com/api/og?username=${username}&image=${pfpUrl}`;
     actions?.composeCast({
       text: "I generated a custom OG image using Monad Mini App template",
       embeds: [ogImageUrl],
