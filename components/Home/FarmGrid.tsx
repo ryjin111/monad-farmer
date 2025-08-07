@@ -13,7 +13,8 @@ export function FarmGrid() {
     waterPlot, 
     harvestCrop, 
     isLoading,
-    loadPlots
+    loadPlots,
+    address
   } = useFarmingContract()
   
   const [selectedPlotId, setSelectedPlotId] = useState<number | null>(null)
@@ -21,27 +22,27 @@ export function FarmGrid() {
 
   // Load plots when component mounts
   useEffect(() => {
-    if (loadPlots) {
+    if (loadPlots && address) {
       loadPlots()
     }
-  }, [loadPlots])
+  }, [loadPlots, address])
 
   const handlePlotClick = (plotId: number) => {
     const plot = plots[plotId]
-    if (!plot) return
-
-    if (plot.state !== PlotState.EMPTY) {
-      // If there's a crop, try to harvest it
-      if (plot.state === PlotState.READY) {
-        harvestCrop(plotId)
-      } else if (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) {
-        // Water the crop if it's planted or growing
-        waterPlot(plotId)
-      }
-    } else {
-      // If no crop, show seed selector
+    
+    // If no plot data or plot is empty, show seed selector
+    if (!plot || plot.state === PlotState.EMPTY) {
       setSelectedPlotId(plotId)
       setShowSeedSelector(true)
+      return
+    }
+
+    // If there's a crop, try to harvest it
+    if (plot.state === PlotState.READY) {
+      harvestCrop(plotId)
+    } else if (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) {
+      // Water the crop if it's planted or growing
+      waterPlot(plotId)
     }
   }
 
@@ -54,6 +55,7 @@ export function FarmGrid() {
   }
 
   const getGrowthStage = (plot: any) => {
+    if (!plot) return '⬜'
     if (plot.state === PlotState.EMPTY) return '⬜'
     if (plot.state === PlotState.PLANTED) return '🌱'
     if (plot.state === PlotState.GROWING) return '🌿'
@@ -63,6 +65,9 @@ export function FarmGrid() {
   }
 
   const getPlotColor = (plot: any) => {
+    if (!plot) {
+      return 'bg-brown-100 border-brown-300'
+    }
     if (plot.state === PlotState.EMPTY) {
       return 'bg-brown-100 border-brown-300'
     }
@@ -106,7 +111,7 @@ export function FarmGrid() {
       {/* Farm Grid */}
       <div className="grid grid-cols-5 gap-2 max-w-sm mx-auto">
         {Array.from({ length: 25 }, (_, i) => {
-          const plot = plots[i]
+          const plot = plots[i] || null
           return (
             <button
               key={i}
