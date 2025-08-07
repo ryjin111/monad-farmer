@@ -9,9 +9,7 @@ export function PlayerStats() {
   const { player, isLoading } = useFarmingContract()
   const [showInventory, setShowInventory] = useState(false)
 
-  // MONAD to coins conversion: 1 MONAD = 50 coins
-  const monadToCoins = (monadAmount: number) => monadAmount * 50
-  const coinsToMonad = (coinsAmount: number) => coinsAmount / 50
+
 
   if (isLoading) {
     return (
@@ -81,15 +79,7 @@ export function PlayerStats() {
         </div>
       </div>
 
-      {/* MONAD Conversion Info */}
-      <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-4">
-        <h4 className="font-bold text-gray-800 mb-2">💎 MONAD Conversion</h4>
-        <div className="text-sm text-gray-700 space-y-1">
-          <p>• 1 MONAD = 50 coins</p>
-          <p>• Your {Number(player.coins)} coins = {coinsToMonad(Number(player.coins)).toFixed(2)} MONAD</p>
-          <p>• Need 50 coins to buy 1 MONAD</p>
-        </div>
-      </div>
+
 
       {/* Action Buttons */}
       <div className="flex space-x-2">
