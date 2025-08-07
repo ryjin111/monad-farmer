@@ -192,28 +192,7 @@ Growing the best crops on the Monad blockchain! 🚜
         </div>
       </div>
 
-      {/* Quick Share Preview */}
-      <div className="bg-white rounded-lg p-4 border">
-        <h4 className="font-bold mb-3 text-gray-800">📤 Quick Share</h4>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="text-center p-2 bg-blue-50 rounded-lg">
-            <div className="text-lg">📊</div>
-            <div className="text-xs text-gray-700">Progress</div>
-          </div>
-          <div className="text-center p-2 bg-green-50 rounded-lg">
-            <div className="text-lg">🏆</div>
-            <div className="text-xs text-gray-700">Achievements</div>
-          </div>
-          <div className="text-center p-2 bg-yellow-50 rounded-lg">
-            <div className="text-lg">🌾</div>
-            <div className="text-xs text-gray-700">Harvests</div>
-          </div>
-          <div className="text-center p-2 bg-purple-50 rounded-lg">
-            <div className="text-lg">👥</div>
-            <div className="text-xs text-gray-700">Community</div>
-          </div>
-        </div>
-      </div>
+
     </div>
   )
 } 

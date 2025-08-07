@@ -111,28 +111,7 @@ export function PlayerStats() {
         </div>
       </div>
 
-      {/* Quick Stats Preview */}
-      <div className="bg-white rounded-lg p-4 border">
-        <h4 className="font-bold mb-2 text-gray-800">Quick Stats</h4>
-        <div className="grid grid-cols-4 gap-2">
-          <div className="text-center">
-            <div className="text-2xl">🍅</div>
-            <div className="text-xs text-gray-700">Tomatoes</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl">🥕</div>
-            <div className="text-xs text-gray-700">Carrots</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl">🥔</div>
-            <div className="text-xs text-gray-700">Potatoes</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl">🌽</div>
-            <div className="text-xs text-gray-700">Corn</div>
-          </div>
-        </div>
-      </div>
+
 
 
 
