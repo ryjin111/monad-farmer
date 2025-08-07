@@ -334,7 +334,7 @@ export const FARMING_GAME_ABI = [
 ] as const
 
 // Contract address (deployed to Monad testnet)
-export const FARMING_GAME_ADDRESS = '0x0e48E4df05167A12687aA50cF34F1A5DC2D37361'
+export const FARMING_GAME_ADDRESS = '0xD23ED4668cdCDE2100b5621741dE43381CfC3d1E'
 
 // Crop types enum
 export enum CropType {

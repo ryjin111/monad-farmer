@@ -49,17 +49,26 @@ export function FarmGrid() {
 
   const handleSeedSelect = (cropType: CropType) => {
     if (selectedPlotId !== null) {
-      // Check if player has enough coins
-      const cropKey = Object.keys(CropType).find(key => CropType[key as keyof typeof CropType] === cropType)
-      const crop = cropKey ? CROPS[cropKey.toLowerCase()] : null
+      // Get seed cost from smart contract values
+      const seedCosts = {
+        [CropType.TOMATO]: 10,
+        [CropType.CARROT]: 5,
+        [CropType.POTATO]: 12,
+        [CropType.CORN]: 15,
+        [CropType.WHEAT]: 20,
+        [CropType.STRAWBERRY]: 30,
+        [CropType.GOLDEN_APPLE]: 200
+      }
       
-      if (!player || !crop) {
-        setInsufficientCoinsError('Unable to get player or crop data')
+      const seedCost = seedCosts[cropType] || 10
+      
+      if (!player) {
+        setInsufficientCoinsError('Unable to get player data')
         return
       }
       
-      if (Number(player.coins) < crop.buyPrice) {
-        setInsufficientCoinsError(`Not enough coins! You need ${crop.buyPrice} coins to buy ${crop.name} seeds. You have ${Number(player.coins)} coins.`)
+      if (Number(player.coins) < seedCost) {
+        setInsufficientCoinsError(`Not enough coins! You need ${seedCost} coins to buy seeds. You have ${Number(player.coins)} coins.`)
         return
       }
       
@@ -110,6 +119,9 @@ export function FarmGrid() {
         <div className="text-center">
           <div className="text-xl font-bold">🌾 Your Farm</div>
           <div className="text-gray-600">Loading farm data...</div>
+          <div className="mt-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+          </div>
         </div>
       </div>
     )
@@ -134,9 +146,11 @@ export function FarmGrid() {
             <button
               key={i}
               onClick={() => handlePlotClick(i)}
+              disabled={isLoading}
               className={`
                 w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl
                 transition-all duration-200 hover:scale-105 active:scale-95
+                ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
                 ${getPlotColor(plot)}
               `}
             >
@@ -172,14 +186,21 @@ export function FarmGrid() {
             )}
             
             <div className="grid grid-cols-2 gap-3">
-              {Object.entries(CROPS).map(([key, crop]) => {
-                const cropType = CropType[key.toUpperCase() as keyof typeof CropType]
-                const canPlant = player && Number(player.coins) >= crop.buyPrice
+              {[
+                { key: 'tomato', cropType: CropType.TOMATO, name: 'Tomato', emoji: '🍅', cost: 10 },
+                { key: 'carrot', cropType: CropType.CARROT, name: 'Carrot', emoji: '🥕', cost: 5 },
+                { key: 'potato', cropType: CropType.POTATO, name: 'Potato', emoji: '🥔', cost: 12 },
+                { key: 'corn', cropType: CropType.CORN, name: 'Corn', emoji: '🌽', cost: 15 },
+                { key: 'wheat', cropType: CropType.WHEAT, name: 'Wheat', emoji: '🌾', cost: 20 },
+                { key: 'strawberry', cropType: CropType.STRAWBERRY, name: 'Strawberry', emoji: '🍓', cost: 30 },
+                { key: 'goldenApple', cropType: CropType.GOLDEN_APPLE, name: 'Golden Apple', emoji: '🍎', cost: 200 }
+              ].map(({ key, cropType, name, emoji, cost }) => {
+                const canPlant = player && Number(player.coins) >= cost
 
                 return (
                   <div key={key} className="relative">
                     <button
-                      onClick={() => canPlant ? handleSeedSelect(cropType) : setInsufficientCoinsError(`Not enough coins! You need ${crop.buyPrice} coins to buy ${crop.name} seeds. You have ${Number(player?.coins || 0)} coins.`)}
+                      onClick={() => canPlant ? handleSeedSelect(cropType) : setInsufficientCoinsError(`Not enough coins! You need ${cost} coins to buy ${name} seeds. You have ${Number(player?.coins || 0)} coins.`)}
                       disabled={!canPlant}
                       className={`
                         w-full p-3 rounded-lg border-2 text-center transition-all group
@@ -189,17 +210,17 @@ export function FarmGrid() {
                         }
                       `}
                     >
-                      <div className="text-2xl mb-1">{crop.emoji}</div>
-                      <div className="text-sm font-medium">{crop.name}</div>
+                      <div className="text-2xl mb-1">{emoji}</div>
+                      <div className="text-sm font-medium">{name}</div>
                       <div className="text-xs text-gray-500">
-                        {crop.buyPrice} coins
+                        {cost} coins
                       </div>
                     </button>
                     
                     {/* Tooltip for insufficient coins */}
                     {!canPlant && (
                       <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-red-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        Need {crop.buyPrice} coins
+                        Need {cost} coins
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-red-500"></div>
                       </div>
                     )}

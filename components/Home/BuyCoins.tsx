@@ -80,26 +80,17 @@ export function BuyCoins() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-gray-800">💰 Buy Coins with MONAD</h2>
+     
       
       {/* Current Balance */}
       <div className="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-lg p-4">
         <h3 className="font-semibold text-gray-800 mb-2">💎 Current Balance</h3>
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-yellow-600">💰</div>
-            <div className="text-sm font-medium text-gray-800">
-              {player ? Number(player.coins) : 0}
-            </div>
-            <div className="text-xs text-gray-600">Coins</div>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-yellow-600">💰</div>
+          <div className="text-sm font-medium text-gray-800">
+            {player ? Number(player.coins) : 0}
           </div>
-          <div>
-            <div className="text-2xl font-bold text-purple-600">💎</div>
-            <div className="text-sm font-medium text-gray-800">
-              {player ? (Number(player.coins) / MONAD_TO_COINS_RATE).toFixed(2) : '0.00'}
-            </div>
-            <div className="text-xs text-gray-600">MONAD Value</div>
-          </div>
+          <div className="text-xs text-gray-600">Coins</div>
         </div>
       </div>
 

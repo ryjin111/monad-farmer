@@ -109,7 +109,7 @@ Growing the best crops on the Monad blockchain! 🚜
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-gray-800">📱 Social Features</h2>
+   
       
       {/* Farm Status */}
       <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-4">
