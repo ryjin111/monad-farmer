@@ -79,15 +79,7 @@ export function WalletActions() {
           </p>
         </div>
 
-        {chainId !== 8453 && (
-              <button
-                type="button"
-            className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg p-2 text-sm font-medium transition-colors"
-                onClick={() => switchChain({ chainId: 8453 })}
-              >
-                Switch to Monad Testnet
-              </button>
-            )}
+
 
             <button
               type="button"
