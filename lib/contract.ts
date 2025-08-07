@@ -100,25 +100,6 @@ export const FARMING_GAME_ABI = [
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "plotId",
-        "type": "uint256"
-      }
-    ],
-    "name": "PlotWatered",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "player",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "enum FarmingGame.CropType",
         "name": "cropType",
         "type": "uint8"
@@ -140,6 +121,75 @@ export const FARMING_GAME_ABI = [
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "monadAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "coinsReceived",
+        "type": "uint256"
+      }
+    ],
+    "name": "CoinsPurchased",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "plotId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum FarmingGame.CropType",
+        "name": "cropType",
+        "type": "uint8"
+      }
+    ],
+    "name": "plantCrop",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "plotId",
+        "type": "uint256"
+      }
+    ],
+    "name": "waterPlot",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "plotId",
+        "type": "uint256"
+      }
+    ],
+    "name": "harvestCrop",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "enum FarmingGame.CropType",
@@ -158,123 +208,10 @@ export const FARMING_GAME_ABI = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "enum FarmingGame.CropType",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "name": "cropGrowthTimes",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum FarmingGame.CropType",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "name": "cropSeedPrices",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum FarmingGame.CropType",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "name": "cropSellPrices",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "player",
-        "type": "address"
-      },
-      {
-        "internalType": "enum FarmingGame.CropType",
-        "name": "cropType",
-        "type": "uint8"
-      }
-    ],
-    "name": "getCropCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "player",
-        "type": "address"
-      }
-    ],
-    "name": "getPlayer",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "coins",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "experience",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "level",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalHarvests",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalPlanted",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
+    "inputs": [],
+    "name": "buyCoins",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -334,22 +271,48 @@ export const FARMING_GAME_ABI = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      }
+    ],
+    "name": "getPlayer",
+    "outputs": [
+      {
         "internalType": "uint256",
-        "name": "plotId",
+        "name": "coins",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "experience",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "level",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalHarvests",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPlanted",
         "type": "uint256"
       }
     ],
-    "name": "harvestCrop",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "plotId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
       },
       {
         "internalType": "enum FarmingGame.CropType",
@@ -357,28 +320,21 @@ export const FARMING_GAME_ABI = [
         "type": "uint8"
       }
     ],
-    "name": "plantCrop",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "getCropCount",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "plotId",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "waterPlot",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   }
 ] as const
 
 // Contract address (deployed to Monad testnet)
-export const FARMING_GAME_ADDRESS = '0x845166a889b056D180b4d38BFEf0C7f95Bc357C9'
+export const FARMING_GAME_ADDRESS = '0x59db61af8500A5df9BD65Aad9611AbAcef261669'
 
 // Crop types enum
 export enum CropType {

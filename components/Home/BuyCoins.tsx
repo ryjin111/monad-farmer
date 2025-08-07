@@ -2,12 +2,11 @@
 
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
-import { parseEther, formatEther } from 'viem'
 import { useFarmingContract } from '@/lib/useFarmingContract'
 
 export function BuyCoins() {
   const { address, isConnected } = useAccount()
-  const { player } = useFarmingContract()
+  const { player, buyCoins, isLoading } = useFarmingContract()
   const [monadAmount, setMonadAmount] = useState('1')
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -29,14 +28,10 @@ export function BuyCoins() {
     setIsProcessing(true)
     
     try {
-      // This would be a smart contract call to buy coins with MONAD
-      // For now, we'll simulate the transaction
-      console.log(`Buying ${coinsToReceive} coins with ${monadAmount} MONAD`)
+      // Call the real smart contract function
+      await buyCoins(monadAmount)
       
-      // Simulate transaction delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      alert(`Successfully purchased ${coinsToReceive} coins with ${monadAmount} MONAD!`)
+      // Reset form after successful transaction
       setMonadAmount('1')
     } catch (error) {
       console.error('Error buying coins:', error)
@@ -155,13 +150,13 @@ export function BuyCoins() {
         {/* Buy Button */}
         <button
           onClick={handleBuyCoins}
-          disabled={isProcessing || !monadAmount || Number(monadAmount) <= 0}
+          disabled={isProcessing || isLoading || !monadAmount || Number(monadAmount) <= 0}
           className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
         >
-          {isProcessing ? (
+          {isProcessing || isLoading ? (
             <>
               <span>🔄</span>
-              <span>Processing...</span>
+              <span>Processing Transaction...</span>
             </>
           ) : (
             <>
@@ -190,6 +185,7 @@ export function BuyCoins() {
           <li>• You can earn coins by harvesting crops</li>
           <li>• MONAD tokens are required for gas fees on Monad network</li>
           <li>• Keep some MONAD for transaction fees</li>
+          <li>• All coins are stored on-chain and persist permanently</li>
         </ul>
       </div>
     </div>

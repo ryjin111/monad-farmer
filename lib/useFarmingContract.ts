@@ -1,6 +1,7 @@
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { contractConfig, CropType, PlotState, contractHelpers } from './contract'
 import { useState, useEffect } from 'react'
+import { parseEther } from 'viem'
 
 export interface OnChainPlot {
   cropType: CropType
@@ -40,6 +41,23 @@ export function useFarmingContract() {
   // Write contract functions
   const { writeContract, data: hash, isPending } = useWriteContract()
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+
+  // Buy coins with MONAD
+  const buyCoins = async (monadAmount: string) => {
+    if (!address) return
+    
+    try {
+      setIsLoading(true)
+      await writeContract({
+        ...contractConfig,
+        functionName: 'buyCoins',
+        value: parseEther(monadAmount),
+      })
+    } catch (error) {
+      console.error('Error buying coins:', error)
+      setIsLoading(false)
+    }
+  }
 
   // Plant crop
   const plantCrop = async (plotId: number, cropType: CropType) => {
@@ -173,6 +191,7 @@ export function useFarmingContract() {
     harvestCrop,
     buySeeds,
     loadPlots,
+    buyCoins,
 
     // Transaction status
     hash,
