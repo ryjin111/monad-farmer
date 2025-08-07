@@ -13,7 +13,7 @@ export function Achievements() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">🏆 Achievements</h2>
+      <h2 className="text-xl font-bold text-gray-800">🏆 Achievements</h2>
       
       {/* Unlocked Achievements */}
       {unlockedAchievements.length > 0 && (
@@ -24,7 +24,7 @@ export function Achievements() {
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">{achievement.emoji}</div>
                 <div className="flex-1">
-                  <div className="font-medium">{achievement.name}</div>
+                  <div className="font-medium text-gray-800">{achievement.name}</div>
                   <div className="text-sm text-gray-600">{achievement.description}</div>
                   <div className="text-xs text-green-600">
                     Unlocked {new Date(achievement.unlockedAt).toLocaleDateString()}
@@ -45,7 +45,7 @@ export function Achievements() {
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">{achievement.emoji}</div>
                 <div className="flex-1">
-                  <div className="font-medium">{achievement.name}</div>
+                  <div className="font-medium text-gray-700">{achievement.name}</div>
                   <div className="text-sm text-gray-600">{achievement.description}</div>
                 </div>
               </div>
@@ -81,6 +81,29 @@ export function Achievements() {
           <li>• Try planting rare and legendary crops for special achievements</li>
           <li>• Keep farming to reach 100 harvests and become a master farmer</li>
         </ul>
+      </div>
+
+      {/* Quick Achievement Preview */}
+      <div className="bg-white rounded-lg p-4 border">
+        <h4 className="font-bold mb-3 text-gray-800">🎯 Achievement Goals</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="text-center p-2 bg-green-50 rounded-lg">
+            <div className="text-lg">🌱</div>
+            <div className="text-xs text-gray-700">First Harvest</div>
+          </div>
+          <div className="text-center p-2 bg-blue-50 rounded-lg">
+            <div className="text-lg">💰</div>
+            <div className="text-xs text-gray-700">Millionaire</div>
+          </div>
+          <div className="text-center p-2 bg-purple-50 rounded-lg">
+            <div className="text-lg">👑</div>
+            <div className="text-xs text-gray-700">Master Farmer</div>
+          </div>
+          <div className="text-center p-2 bg-yellow-50 rounded-lg">
+            <div className="text-lg">⭐</div>
+            <div className="text-xs text-gray-700">Legendary</div>
+          </div>
+        </div>
       </div>
     </div>
   )

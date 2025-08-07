@@ -14,11 +14,15 @@ export function PlayerStats() {
     buySeeds(cropType, 1)
   }
 
+  // MONAD to coins conversion: 1 MONAD = 50 coins
+  const monadToCoins = (monadAmount: number) => monadAmount * 50
+  const coinsToMonad = (coinsAmount: number) => coinsAmount / 50
+
   if (isLoading) {
     return (
       <div className="space-y-4">
         <div className="text-center">
-          <div className="text-xl font-bold">👤 Player Stats</div>
+          <div className="text-xl font-bold text-gray-800">👤 Player Stats</div>
           <div className="text-gray-600">Loading player data...</div>
         </div>
       </div>
@@ -29,7 +33,7 @@ export function PlayerStats() {
     return (
       <div className="space-y-4">
         <div className="text-center">
-          <div className="text-xl font-bold">👤 Player Stats</div>
+          <div className="text-xl font-bold text-gray-800">👤 Player Stats</div>
           <div className="text-red-600">Connect your wallet to view stats</div>
         </div>
       </div>
@@ -45,7 +49,7 @@ export function PlayerStats() {
             👤
           </div>
           <div>
-            <h3 className="font-bold text-lg">Monad Farmer</h3>
+            <h3 className="font-bold text-lg text-gray-800">Monad Farmer</h3>
             <p className="text-sm text-gray-600">On-chain player</p>
           </div>
         </div>
@@ -53,17 +57,17 @@ export function PlayerStats() {
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-2xl font-bold text-yellow-600">💰</div>
-            <div className="text-sm font-medium">{Number(player.coins)}</div>
+            <div className="text-sm font-medium text-gray-800">{Number(player.coins)}</div>
             <div className="text-xs text-gray-500">Coins</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-blue-600">⭐</div>
-            <div className="text-sm font-medium">{Number(player.level)}</div>
+            <div className="text-sm font-medium text-gray-800">{Number(player.level)}</div>
             <div className="text-xs text-gray-500">Level</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-600">📈</div>
-            <div className="text-sm font-medium">{Number(player.experience)}</div>
+            <div className="text-sm font-medium text-gray-800">{Number(player.experience)}</div>
             <div className="text-xs text-gray-500">XP</div>
           </div>
         </div>
@@ -71,14 +75,24 @@ export function PlayerStats() {
         <div className="grid grid-cols-2 gap-4 text-center mt-3">
           <div>
             <div className="text-lg font-bold text-purple-600">🌾</div>
-            <div className="text-sm font-medium">{Number(player.totalHarvests)}</div>
+            <div className="text-sm font-medium text-gray-800">{Number(player.totalHarvests)}</div>
             <div className="text-xs text-gray-500">Total Harvests</div>
           </div>
           <div>
             <div className="text-lg font-bold text-orange-600">🌱</div>
-            <div className="text-sm font-medium">{Number(player.totalPlanted)}</div>
+            <div className="text-sm font-medium text-gray-800">{Number(player.totalPlanted)}</div>
             <div className="text-xs text-gray-500">Total Planted</div>
           </div>
+        </div>
+      </div>
+
+      {/* MONAD Conversion Info */}
+      <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-4">
+        <h4 className="font-bold text-gray-800 mb-2">💎 MONAD Conversion</h4>
+        <div className="text-sm text-gray-700 space-y-1">
+          <p>• 1 MONAD = 50 coins</p>
+          <p>• Your {Number(player.coins)} coins = {coinsToMonad(Number(player.coins)).toFixed(2)} MONAD</p>
+          <p>• Need 50 coins to buy 1 MONAD</p>
         </div>
       </div>
 
@@ -100,23 +114,23 @@ export function PlayerStats() {
 
       {/* Quick Stats Preview */}
       <div className="bg-white rounded-lg p-4 border">
-        <h4 className="font-bold mb-2">Quick Stats</h4>
+        <h4 className="font-bold mb-2 text-gray-800">Quick Stats</h4>
         <div className="grid grid-cols-4 gap-2">
           <div className="text-center">
             <div className="text-2xl">🍅</div>
-            <div className="text-xs">Tomatoes</div>
+            <div className="text-xs text-gray-700">Tomatoes</div>
           </div>
           <div className="text-center">
             <div className="text-2xl">🥕</div>
-            <div className="text-xs">Carrots</div>
+            <div className="text-xs text-gray-700">Carrots</div>
           </div>
           <div className="text-center">
             <div className="text-2xl">🥔</div>
-            <div className="text-xs">Potatoes</div>
+            <div className="text-xs text-gray-700">Potatoes</div>
           </div>
           <div className="text-center">
             <div className="text-2xl">🌽</div>
-            <div className="text-xs">Corn</div>
+            <div className="text-xs text-gray-700">Corn</div>
           </div>
         </div>
       </div>

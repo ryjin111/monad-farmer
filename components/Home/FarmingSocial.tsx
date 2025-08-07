@@ -89,25 +89,25 @@ Growing the best crops in the Monad Farming Simulator! 🚜
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">📱 Social Features</h2>
+      <h2 className="text-xl font-bold text-gray-800">📱 Social Features</h2>
       
       {/* Farm Status */}
       <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-4">
-        <h3 className="font-semibold mb-3">🌾 Farm Status</h3>
+        <h3 className="font-semibold mb-3 text-gray-800">🌾 Farm Status</h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-2xl">🌱</div>
-            <div className="text-sm font-medium">{farmStatus.plantedPlots}</div>
+            <div className="text-sm font-medium text-gray-800">{farmStatus.plantedPlots}</div>
             <div className="text-xs text-gray-600">Planted</div>
           </div>
           <div>
             <div className="text-2xl">🌾</div>
-            <div className="text-sm font-medium">{farmStatus.readyToHarvest}</div>
+            <div className="text-sm font-medium text-gray-800">{farmStatus.readyToHarvest}</div>
             <div className="text-xs text-gray-600">Ready</div>
           </div>
           <div>
             <div className="text-2xl">💧</div>
-            <div className="text-sm font-medium">{farmStatus.wateredPlots}</div>
+            <div className="text-sm font-medium text-gray-800">{farmStatus.wateredPlots}</div>
             <div className="text-xs text-gray-600">Watered</div>
           </div>
         </div>
@@ -166,6 +166,29 @@ Growing the best crops in the Monad Farming Simulator! 🚜
         <div className="text-sm text-gray-600">
           <p>Join the Monad Farming Simulator community!</p>
           <p className="mt-1">Share your progress, compare achievements, and help other farmers grow their virtual farms.</p>
+        </div>
+      </div>
+
+      {/* Quick Share Preview */}
+      <div className="bg-white rounded-lg p-4 border">
+        <h4 className="font-bold mb-3 text-gray-800">📤 Quick Share</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="text-center p-2 bg-blue-50 rounded-lg">
+            <div className="text-lg">📊</div>
+            <div className="text-xs text-gray-700">Progress</div>
+          </div>
+          <div className="text-center p-2 bg-green-50 rounded-lg">
+            <div className="text-lg">🏆</div>
+            <div className="text-xs text-gray-700">Achievements</div>
+          </div>
+          <div className="text-center p-2 bg-yellow-50 rounded-lg">
+            <div className="text-lg">🌾</div>
+            <div className="text-xs text-gray-700">Harvests</div>
+          </div>
+          <div className="text-center p-2 bg-purple-50 rounded-lg">
+            <div className="text-lg">👥</div>
+            <div className="text-xs text-gray-700">Community</div>
+          </div>
         </div>
       </div>
     </div>
