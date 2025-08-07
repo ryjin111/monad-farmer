@@ -19,6 +19,7 @@ export function FarmGrid() {
   
   const [selectedPlotId, setSelectedPlotId] = useState<number | null>(null)
   const [showSeedSelector, setShowSeedSelector] = useState(false)
+  const [insufficientCoinsError, setInsufficientCoinsError] = useState<string | null>(null)
 
   // Load plots when component mounts
   useEffect(() => {
@@ -48,6 +49,23 @@ export function FarmGrid() {
 
   const handleSeedSelect = (cropType: CropType) => {
     if (selectedPlotId !== null) {
+      // Check if player has enough coins
+      const cropKey = Object.keys(CropType).find(key => CropType[key as keyof typeof CropType] === cropType)
+      const crop = cropKey ? CROPS[cropKey.toLowerCase()] : null
+      
+      if (!player || !crop) {
+        setInsufficientCoinsError('Unable to get player or crop data')
+        return
+      }
+      
+      if (Number(player.coins) < crop.buyPrice) {
+        setInsufficientCoinsError(`Not enough coins! You need ${crop.buyPrice} coins to buy ${crop.name} seeds. You have ${Number(player.coins)} coins.`)
+        return
+      }
+      
+      // Clear any previous error
+      setInsufficientCoinsError(null)
+      
       plantCrop(selectedPlotId, cropType)
       setSelectedPlotId(null)
       setShowSeedSelector(false)
@@ -136,6 +154,23 @@ export function FarmGrid() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
             <h3 className="text-lg font-bold mb-4">Select Seeds</h3>
+            
+            {/* Error Message */}
+            {insufficientCoinsError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <span className="text-red-500">⚠️</span>
+                  <span className="text-sm text-red-700 font-medium">{insufficientCoinsError}</span>
+                </div>
+                <button
+                  onClick={() => setInsufficientCoinsError(null)}
+                  className="mt-2 text-xs text-red-600 hover:text-red-800 underline"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+            
             <div className="grid grid-cols-2 gap-3">
               {Object.entries(CROPS).map(([key, crop]) => {
                 const cropType = CropType[key.toUpperCase() as keyof typeof CropType]
@@ -164,7 +199,10 @@ export function FarmGrid() {
               })}
             </div>
             <button
-              onClick={() => setShowSeedSelector(false)}
+              onClick={() => {
+                setShowSeedSelector(false)
+                setInsufficientCoinsError(null) // Clear error when closing modal
+              }}
               className="mt-4 w-full bg-gradient-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 text-white py-3 px-4 rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2"
             >
               <span>❌</span>
