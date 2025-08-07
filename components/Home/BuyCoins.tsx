@@ -126,7 +126,7 @@ export function BuyCoins() {
             step="0.1"
             value={monadAmount}
             onChange={(e) => setMonadAmount(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder-gray-500"
             placeholder="Enter MONAD amount"
           />
         </div>

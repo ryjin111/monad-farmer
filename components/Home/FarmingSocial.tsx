@@ -2,26 +2,38 @@
 
 import { useGameState } from '@/lib/game'
 import { useFrame } from '@/components/farcaster-provider'
+import { useFarmingContract } from '@/lib/useFarmingContract'
+import { useAccount } from 'wagmi'
 
 export function FarmingSocial() {
   const { gameState } = useGameState()
   const { actions } = useFrame()
+  const { player, plots } = useFarmingContract()
+  const { address, isConnected } = useAccount()
 
   const handleShareProgress = async () => {
-    const crops = gameState.player.inventory.filter(item => item.type === 'crop')
-    const totalCrops = crops.reduce((sum, crop) => sum + crop.quantity, 0)
+    if (!isConnected || !player) {
+      alert('Please connect your wallet to share progress')
+      return
+    }
+
+    // Use on-chain data instead of client-side data
+    const plantedPlots = plots.filter(plot => plot.state !== 0).length // 0 = EMPTY
+    const readyToHarvest = plots.filter(plot => plot.isReady).length
     
-    const message = `🌾 Farming Simulator Progress! 🌾
+    const message = `🌾 Monad Farming Simulator Progress! 🌾
 
-💰 Coins: ${gameState.player.coins}
-⭐ Level: ${gameState.player.level}
-📈 Experience: ${gameState.player.experience}
-🌱 Total Crops Harvested: ${totalCrops}
-🏆 Achievements: ${gameState.player.achievements.length}
+💰 Coins: ${Number(player.coins)}
+⭐ Level: ${Number(player.level)}
+📈 Experience: ${Number(player.experience)}
+🌱 Total Crops Planted: ${Number(player.totalPlanted)}
+🌾 Total Crops Harvested: ${Number(player.totalHarvests)}
+🏗️ Active Plots: ${plantedPlots}
+🌾 Ready to Harvest: ${readyToHarvest}
 
-Just harvested some fresh crops in the Monad Farming Simulator! 🚜
+Farming on the Monad blockchain! 🚜
 
-#FarmingSimulator #Monad #Farcaster`
+#MonadFarming #Monad #Farcaster #BlockchainGaming`
 
     try {
       await actions?.composeCast({
@@ -39,9 +51,9 @@ Just harvested some fresh crops in the Monad Farming Simulator! 🚜
 ${achievement.emoji} ${achievement.name}
 ${achievement.description}
 
-Just unlocked this achievement in the Monad Farming Simulator! 🚜
+Just unlocked this Soulbound NFT achievement in the Monad Farming Simulator! 🚜
 
-#FarmingSimulator #Monad #Farcaster #Achievement`
+#MonadFarming #Monad #Farcaster #Achievement #NFT`
 
     try {
       await actions?.composeCast({
@@ -54,16 +66,22 @@ Just unlocked this achievement in the Monad Farming Simulator! 🚜
   }
 
   const handleShareHarvest = async (cropName: string, cropEmoji: string) => {
+    if (!isConnected || !player) {
+      alert('Please connect your wallet to share harvest')
+      return
+    }
+
     const message = `🌾 Fresh Harvest! 🌾
 
 Just harvested ${cropEmoji} ${cropName} from my farm!
 
-💰 Current Balance: ${gameState.player.coins}
-⭐ Level: ${gameState.player.level}
+💰 Current Balance: ${Number(player.coins)}
+⭐ Level: ${Number(player.level)}
+📈 Experience: ${Number(player.experience)}
 
-Growing the best crops in the Monad Farming Simulator! 🚜
+Growing the best crops on the Monad blockchain! 🚜
 
-#FarmingSimulator #Monad #Farcaster #Harvest`
+#MonadFarming #Monad #Farcaster #Harvest #BlockchainGaming`
 
     try {
       await actions?.composeCast({
@@ -76,11 +94,13 @@ Growing the best crops in the Monad Farming Simulator! 🚜
   }
 
   const getFarmStatus = () => {
-    const plantedPlots = gameState.farm.filter(plot => plot.crop).length
-    const readyToHarvest = gameState.farm.filter(
-      plot => plot.crop && plot.crop.currentGrowth >= plot.crop.growthTime && !plot.crop.isHarvested
-    ).length
-    const wateredPlots = gameState.farm.filter(plot => plot.isWatered).length
+    if (!isConnected || !plots) {
+      return { plantedPlots: 0, readyToHarvest: 0, wateredPlots: 0 }
+    }
+    
+    const plantedPlots = plots.filter(plot => plot.state !== 0).length // 0 = EMPTY
+    const readyToHarvest = plots.filter(plot => plot.isReady).length
+    const wateredPlots = plots.filter(plot => plot.isWatered).length
 
     return { plantedPlots, readyToHarvest, wateredPlots }
   }
@@ -124,22 +144,25 @@ Growing the best crops in the Monad Farming Simulator! 🚜
         </button>
 
         {/* Share Latest Achievement */}
-        {gameState.player.achievements.length > 0 && (
+        {isConnected && player && Number(player.totalHarvests) > 0 && (
           <button
-            onClick={() => handleShareAchievement(gameState.player.achievements[gameState.player.achievements.length - 1])}
+            onClick={() => handleShareAchievement({
+              emoji: "🏆",
+              name: "Harvest Master",
+              description: `Harvested ${Number(player.totalHarvests)} crops on the Monad blockchain!`
+            })}
             className="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
           >
             <span>🏆</span>
-            <span>Share Latest Achievement</span>
+            <span>Share Harvest Achievement</span>
           </button>
         )}
 
         {/* Share Latest Harvest */}
-        {gameState.player.inventory.filter(item => item.type === 'crop').length > 0 && (
+        {isConnected && player && Number(player.totalHarvests) > 0 && (
           <button
             onClick={() => {
-              const latestCrop = gameState.player.inventory.filter(item => item.type === 'crop')[0]
-              handleShareHarvest(latestCrop.name, latestCrop.emoji)
+              handleShareHarvest("Fresh Crops", "🌾")
             }}
             className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
           >
