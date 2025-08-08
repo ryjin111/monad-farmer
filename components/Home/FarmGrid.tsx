@@ -37,14 +37,14 @@ export function FarmGrid() {
       return
     }
 
-    // If plot is already planted or growing, show error
-    if (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) {
+    // If plot is already planted or growing but not ready, show error
+    if ((plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) && !plot.isReady) {
       alert(`This plot is already occupied! You can water it or wait for it to grow.`)
       return
     }
 
     // If there's a crop ready to harvest, harvest it
-    if (plot.state === PlotState.READY) {
+    if (plot.isReady) {
       harvestCrop(plotId)
     }
   }
@@ -85,6 +85,7 @@ export function FarmGrid() {
 
   const getGrowthStage = (plot: any) => {
     if (!plot) return '⬜'
+    if (plot.isReady) return contractHelpers.getCropEmoji(plot.cropType)
     if (plot.state === PlotState.EMPTY) return '⬜'
     if (plot.state === PlotState.PLANTED) return '🌱'
     if (plot.state === PlotState.GROWING) return '🌿'
@@ -96,6 +97,9 @@ export function FarmGrid() {
   const getPlotColor = (plot: any) => {
     if (!plot) {
       return 'bg-brown-100 border-brown-300'
+    }
+    if (plot.isReady) {
+      return 'bg-yellow-200 border-yellow-400'
     }
     if (plot.state === PlotState.EMPTY) {
       return 'bg-brown-100 border-brown-300'
@@ -139,7 +143,7 @@ export function FarmGrid() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">🌾 Your Farm</h2>
         <div className="text-sm text-gray-600">
-          {player ? `Level ${player.level} • ${player.coins} coins` : 'Connect wallet'}
+          {player ? `Level ${Number(player.level)} • ${Number(player.coins)} coins` : 'Connect wallet'}
         </div>
       </div>
 
@@ -166,7 +170,7 @@ export function FarmGrid() {
               </button>
               
               {/* Water Button for planted/growing crops */}
-              {plot && (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) && (
+              {plot && (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) && !plot.isReady && (
                 <button
                   onClick={() => waterPlot(i)}
                   disabled={isLoading}
@@ -178,7 +182,7 @@ export function FarmGrid() {
               )}
               
               {/* Harvest Button for ready crops */}
-              {plot && plot.state === PlotState.READY && (
+              {plot && plot.isReady && (
                 <button
                   onClick={() => harvestCrop(i)}
                   disabled={isLoading}

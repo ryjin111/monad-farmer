@@ -25,66 +25,37 @@ export function Demo() {
       <WalletActions />
 
       {/* Tab Navigation */}
-      <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
-        <button
-          onClick={() => setActiveTab('farm')}
-          className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'farm' 
-              ? 'bg-white text-green-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          🌾 Farm
-        </button>
-        <button
-          onClick={() => setActiveTab('stats')}
-          className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'stats' 
-              ? 'bg-white text-green-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          👤 Stats
-        </button>
-        <button
-          onClick={() => setActiveTab('achievements')}
-          className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'achievements' 
-              ? 'bg-white text-green-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          🏆 Achievements
-        </button>
-        <button
-          onClick={() => setActiveTab('social')}
-          className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'social' 
-              ? 'bg-white text-green-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          📱 Social
-        </button>
-        <button
-          onClick={() => setActiveTab('buy')}
-          className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'buy' 
-              ? 'bg-white text-green-600 shadow-sm' 
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          💰 Buy
-        </button>
+      <div className="flex space-x-1 bg-white/70 backdrop-blur rounded-lg p-1 shadow-sm border border-gray-200">
+        {([
+          { key: 'farm', label: '🌾 Farm' },
+          { key: 'stats', label: '👤 Stats' },
+          { key: 'achievements', label: '🏆 Achievements' },
+          { key: 'social', label: '📱 Social' },
+          { key: 'buy', label: '💰 Buy' },
+        ] as const).map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setActiveTab(key as any)}
+            className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all duration-150 ${
+              activeTab === key
+                ? 'bg-green-50 text-green-700 shadow'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Tab Content */}
       <div className="flex-1">
-        {activeTab === 'farm' && <FarmGrid />}
-        {activeTab === 'stats' && <PlayerStats />}
-        {activeTab === 'achievements' && <Achievements />}
-        {activeTab === 'social' && <FarmingSocial />}
-        {activeTab === 'buy' && <BuyCoins />}
+        <div className="bg-white/80 backdrop-blur rounded-xl shadow-sm border border-gray-200 p-4">
+          {activeTab === 'farm' && <FarmGrid />}
+          {activeTab === 'stats' && <PlayerStats />}
+          {activeTab === 'achievements' && <Achievements />}
+          {activeTab === 'social' && <FarmingSocial />}
+          {activeTab === 'buy' && <BuyCoins />}
+        </div>
       </div>
     </div>
   )

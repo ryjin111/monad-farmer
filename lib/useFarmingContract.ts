@@ -6,9 +6,9 @@ import { parseEther } from 'viem'
 export interface OnChainPlot {
   cropType: CropType
   state: PlotState
-  plantedAt: bigint
-  lastWatered: bigint
-  growthTime: bigint
+  plantedAt: number
+  lastWatered: number
+  growthTime: number
   isWatered: boolean
   isReady: boolean
 }
@@ -155,16 +155,17 @@ export function useFarmingContract() {
       
       // Use API route to load plots
       const plotPromises = Array.from({ length: 25 }, (_, i) =>
-        fetch(`/api/plot?address=${address}&plotId=${i}`)
-          .then(res => res.json())
-          .then(data => data.plot)
-          .catch(() => null)
+        fetch(`/api/plot?address=${address}&plotId=${i}`).then(async (res) => {
+          if (!res.ok) return null
+          const data = await res.json()
+          return data?.plot ?? null
+        }).catch(() => null)
       )
 
       const plotResults = await Promise.all(plotPromises)
       
       // Create a properly indexed array of plots
-      const plotsArray = new Array(25).fill(null)
+      const plotsArray = new Array<OnChainPlot | null>(25).fill(null)
       plotResults.forEach((plot, index) => {
         if (plot) {
           plotsArray[index] = plot
@@ -172,7 +173,7 @@ export function useFarmingContract() {
       })
       
       console.log('Loaded plots:', plotsArray.filter(Boolean).length)
-      setPlots(plotsArray)
+      setPlots(plotsArray as OnChainPlot[])
     } catch (error) {
       console.error('Error loading plots:', error)
     }
