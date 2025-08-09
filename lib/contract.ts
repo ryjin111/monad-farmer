@@ -149,8 +149,8 @@ export const FARMING_GAME_ABI = [
         "internalType": "uint256",
         "name": "monadAmount",
         "type": "uint256"
-      },
-      {
+  },
+  {
         "indexed": false,
         "internalType": "uint256",
         "name": "coinsReceived",
@@ -247,7 +247,7 @@ export const FARMING_GAME_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
+      },
   {
     "inputs": [
       {

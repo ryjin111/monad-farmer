@@ -38,9 +38,9 @@ Farming on the Monad blockchain! 🚜
     try {
       if (actions?.composeCast) {
         await actions.composeCast({
-          text: message,
-          embeds: []
-        })
+        text: message,
+        embeds: []
+      })
       } else {
         // Fallback for non-Farcaster environments
         alert('Sharing is only available in Farcaster. Your progress:\n\n' + message)

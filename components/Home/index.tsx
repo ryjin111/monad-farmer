@@ -33,27 +33,27 @@ export function Demo() {
           { key: 'social', label: '📱 Social' },
           { key: 'buy', label: '💰 Buy' },
         ] as const).map(({ key, label }) => (
-          <button
+        <button
             key={key}
             onClick={() => setActiveTab(key as any)}
             className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all duration-150 ${
               activeTab === key
                 ? 'bg-green-50 text-green-700 shadow'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
+          }`}
+        >
             {label}
-          </button>
+        </button>
         ))}
       </div>
 
       {/* Tab Content */}
       <div className="flex-1">
         <div className="bg-white/80 backdrop-blur rounded-xl shadow-sm border border-gray-200 p-4">
-          {activeTab === 'farm' && <FarmGrid />}
-          {activeTab === 'stats' && <PlayerStats />}
-          {activeTab === 'achievements' && <Achievements />}
-          {activeTab === 'social' && <FarmingSocial />}
+        {activeTab === 'farm' && <FarmGrid />}
+        {activeTab === 'stats' && <PlayerStats />}
+        {activeTab === 'achievements' && <Achievements />}
+        {activeTab === 'social' && <FarmingSocial />}
           {activeTab === 'buy' && <BuyCoins />}
         </div>
       </div>

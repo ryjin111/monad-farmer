@@ -52,14 +52,14 @@ export async function GET(request: NextRequest) {
     const [cropType, state, plantedAt, lastWatered, growthTime, isWatered, isReady] = plotData as any
 
     const plot = {
-      cropType: Number(cropType),
+        cropType: Number(cropType),
       state: Number(state) as any, // Convert to PlotState enum
       plantedAt: Number(plantedAt),
       lastWatered: Number(lastWatered),
       growthTime: Number(growthTime),
       isWatered: Boolean(isWatered),
       isReady: Boolean(isReady),
-    }
+      }
 
     console.log('Processed plot data:', plot)
 

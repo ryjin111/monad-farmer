@@ -59,7 +59,7 @@ export function WalletActions() {
             Chain ID: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{chainId}</span>
             {chainId === 10143 && <span className="text-green-600 ml-2">✓ Monad Testnet</span>}
           </p>
-        </div>
+              </div>
 
 
 
@@ -100,7 +100,7 @@ export function WalletActions() {
             <p className="text-xs mt-1">
               Make sure you're using the Farcaster app and have a wallet connected.
             </p>
-          </div>
+        </div>
         )}
       </div>
     )

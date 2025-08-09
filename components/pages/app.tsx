@@ -26,13 +26,13 @@ export default function Home() {
         <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50">
           <div className="mx-auto max-w-md flex min-h-screen flex-col items-center justify-center p-4 space-y-8">
             <h1 className="text-3xl font-bold text-center text-green-700">
-              🌾 Monad Farming Simulator
-            </h1>
-            <div className="text-center space-y-4">
-              <p className="text-gray-600">Loading your farm...</p>
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-500">If loading takes too long, try refreshing</p>
+            🌾 Monad Farming Simulator
+          </h1>
+          <div className="text-center space-y-4">
+            <p className="text-gray-600">Loading your farm...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-500">If loading takes too long, try refreshing</p>
               </div>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function Home() {
     <SafeAreaContainer insets={context?.client.safeAreaInsets}>
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50">
         <div className="mx-auto max-w-md p-4">
-          <Demo />
+      <Demo />
         </div>
       </div>
     </SafeAreaContainer>

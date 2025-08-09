@@ -153,21 +153,21 @@ export function FarmGrid() {
           const plot = plots[i] || null
           return (
             <div key={i} className="relative">
-              <button
-                onClick={() => handlePlotClick(i)}
+            <button
+              onClick={() => handlePlotClick(i)}
                 disabled={isLoading}
-                className={`
-                  w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl
-                  transition-all duration-200 hover:scale-105 active:scale-95
+              className={`
+                w-16 h-16 rounded-lg border-2 flex items-center justify-center text-2xl
+                transition-all duration-200 hover:scale-105 active:scale-95
                   ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
-                  ${getPlotColor(plot)}
-                `}
-              >
-                <div className="text-center">
-                  <div>{getGrowthStage(plot)}</div>
-                  {plot?.isWatered && <div className="text-xs text-blue-600">💧</div>}
-                </div>
-              </button>
+                ${getPlotColor(plot)}
+              `}
+            >
+              <div className="text-center">
+                <div>{getGrowthStage(plot)}</div>
+                {plot?.isWatered && <div className="text-xs text-blue-600">💧</div>}
+              </div>
+            </button>
               
               {/* Water Button for planted/growing crops */}
               {plot && (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) && !plot.isReady && (
@@ -233,23 +233,23 @@ export function FarmGrid() {
 
                 return (
                   <div key={key} className="relative">
-                    <button
+                  <button
                       onClick={() => canPlant ? handleSeedSelect(cropType) : setInsufficientCoinsError(`Not enough coins! You need ${cost} coins to buy ${name} seeds. You have ${Number(player?.coins || 0)} coins.`)}
-                      disabled={!canPlant}
-                      className={`
+                    disabled={!canPlant}
+                    className={`
                         w-full p-3 rounded-lg border-2 text-center transition-all group
-                        ${canPlant 
-                          ? 'border-green-300 hover:border-green-500 hover:bg-green-50' 
+                      ${canPlant 
+                        ? 'border-green-300 hover:border-green-500 hover:bg-green-50' 
                           : 'border-gray-200 bg-gray-50 text-gray-400 hover:bg-red-50 hover:border-red-300 cursor-pointer'
-                        }
-                      `}
-                    >
+                      }
+                    `}
+                  >
                       <div className="text-2xl mb-1">{emoji}</div>
                       <div className="text-sm font-medium">{name}</div>
-                      <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500">
                         {cost} coins
-                      </div>
-                    </button>
+                    </div>
+                  </button>
                     
                     {/* Tooltip for insufficient coins */}
                     {!canPlant && (

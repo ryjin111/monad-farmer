@@ -1,7 +1,9 @@
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { contractConfig, CropType, PlotState, contractHelpers } from './contract'
-import { useState, useEffect } from 'react'
+import { useAccount, useReadContract } from 'wagmi'
+import { writeContract as writeContractAction, waitForTransactionReceipt } from 'wagmi/actions'
+import { contractConfig, CropType, PlotState } from './contract'
+import { useState, useEffect, useCallback } from 'react'
 import { parseEther } from 'viem'
+import { config as wagmiConfig } from '@/components/wallet-provider'
 
 export interface OnChainPlot {
   cropType: CropType
@@ -38,132 +40,27 @@ export function useFarmingContract() {
     },
   })
 
-  // Write contract functions
-  const { writeContract, data: hash, isPending } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
-
-  // Buy coins with MONAD
-  const buyCoins = async (monadAmount: string) => {
-    if (!address) {
-      console.error('No wallet address available')
-      return
-    }
-    
-    console.log('Attempting to buy coins:', {
-      address,
-      monadAmount,
-      value: parseEther(monadAmount).toString(),
-      contractAddress: contractConfig.address
-    })
-    
-    try {
-      setIsLoading(true)
-      const result = await writeContract({
-        ...contractConfig,
-        functionName: 'buyCoins',
-        value: parseEther(monadAmount),
-      })
-      
-      console.log('Buy coins transaction submitted:', result)
-    } catch (error) {
-      console.error('Error buying coins:', error)
-      console.error('Error details:', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
-      })
-      setIsLoading(false)
-      throw error // Re-throw to let the UI handle it
-    }
-  }
-
-  // Plant crop
-  const plantCrop = async (plotId: number, cropType: CropType) => {
-    if (!address) return
-    
-    try {
-      setIsLoading(true)
-      console.log('Planting crop:', { plotId, cropType, address })
-      await writeContract({
-        ...contractConfig,
-        functionName: 'plantCrop',
-        args: [BigInt(plotId), cropType],
-      })
-      console.log('Plant crop transaction submitted')
-    } catch (error) {
-      console.error('Error planting crop:', error)
-      setIsLoading(false)
-    }
-  }
-
-  // Water plot
-  const waterPlot = async (plotId: number) => {
-    if (!address) return
-    
-    try {
-      setIsLoading(true)
-      await writeContract({
-        ...contractConfig,
-        functionName: 'waterPlot',
-        args: [BigInt(plotId)],
-      })
-    } catch (error) {
-      console.error('Error watering plot:', error)
-      setIsLoading(false)
-    }
-  }
-
-  // Harvest crop
-  const harvestCrop = async (plotId: number) => {
-    if (!address) return
-    
-    try {
-      setIsLoading(true)
-      await writeContract({
-        ...contractConfig,
-        functionName: 'harvestCrop',
-        args: [BigInt(plotId)],
-      })
-    } catch (error) {
-      console.error('Error harvesting crop:', error)
-      setIsLoading(false)
-    }
-  }
-
-  // Buy seeds
-  const buySeeds = async (cropType: CropType, amount: number) => {
-    if (!address) return
-    
-    try {
-      setIsLoading(true)
-      await writeContract({
-        ...contractConfig,
-        functionName: 'buySeeds',
-        args: [cropType, BigInt(amount)],
-      })
-    } catch (error) {
-      console.error('Error buying seeds:', error)
-      setIsLoading(false)
-    }
-  }
+  // Use wagmi action for writes
+  const writeContract = writeContractAction
 
   // Load all plots for a player
-  const loadPlots = async () => {
+  const loadPlots = useCallback(async () => {
     if (!address) return
 
     try {
-      console.log('Loading plots for address:', address)
-      
       // Use API route to load plots
       const plotPromises = Array.from({ length: 25 }, (_, i) =>
-        fetch(`/api/plot?address=${address}&plotId=${i}`).then(async (res) => {
-          if (!res.ok) return null
-          const data = await res.json()
-          return data?.plot ?? null
-        }).catch(() => null)
+        fetch(`/api/plot?address=${address}&plotId=${i}`)
+          .then(async (res) => {
+            if (!res.ok) return null
+            const data = await res.json()
+            return data?.plot ?? null
+          })
+          .catch(() => null)
       )
 
       const plotResults = await Promise.all(plotPromises)
-      
+
       // Create a properly indexed array of plots
       const plotsArray = new Array<OnChainPlot | null>(25).fill(null)
       plotResults.forEach((plot, index) => {
@@ -171,23 +68,121 @@ export function useFarmingContract() {
           plotsArray[index] = plot
         }
       })
-      
-      console.log('Loaded plots:', plotsArray.filter(Boolean).length)
+
       setPlots(plotsArray as OnChainPlot[])
     } catch (error) {
       console.error('Error loading plots:', error)
     }
-  }
+  }, [address])
 
-  // Update player data when transaction succeeds
-  useEffect(() => {
-    if (isSuccess) {
-      console.log('Transaction successful, refreshing data...')
-      refetchPlayer()
-      loadPlots()
+  // Buy coins with MONAD
+  const buyCoins = async (monadAmount: string) => {
+    if (!address) {
+      console.error('No wallet address available')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      const txHash = await writeContract(wagmiConfig, {
+        ...contractConfig,
+        functionName: 'buyCoins',
+        value: parseEther(monadAmount),
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await Promise.all([refetchPlayer(), loadPlots()])
+    } catch (error) {
+      console.error('Error buying coins:', error)
+      throw error
+    } finally {
       setIsLoading(false)
     }
-  }, [isSuccess, refetchPlayer, loadPlots])
+  }
+
+  // Plant crop
+  const plantCrop = async (plotId: number, cropType: CropType) => {
+    if (!address) return
+
+    try {
+      setIsLoading(true)
+      const txHash = await writeContract(wagmiConfig, {
+        ...contractConfig,
+        functionName: 'plantCrop',
+        args: [BigInt(plotId), cropType],
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await Promise.all([refetchPlayer(), loadPlots()])
+    } catch (error) {
+      console.error('Error planting crop:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Water plot
+  const waterPlot = async (plotId: number) => {
+    if (!address) return
+
+    try {
+      setIsLoading(true)
+      const txHash = await writeContract(wagmiConfig, {
+        ...contractConfig,
+        functionName: 'waterPlot',
+        args: [BigInt(plotId)],
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await Promise.all([refetchPlayer(), loadPlots()])
+    } catch (error) {
+      console.error('Error watering plot:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Harvest crop
+  const harvestCrop = async (plotId: number) => {
+    if (!address) return
+
+    try {
+      setIsLoading(true)
+      const txHash = await writeContract(wagmiConfig, {
+        ...contractConfig,
+        functionName: 'harvestCrop',
+        args: [BigInt(plotId)],
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await Promise.all([refetchPlayer(), loadPlots()])
+    } catch (error) {
+      console.error('Error harvesting crop:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Buy seeds
+  const buySeeds = async (cropType: CropType, amount: number) => {
+    if (!address) return
+
+    try {
+      setIsLoading(true)
+      const txHash = await writeContract(wagmiConfig, {
+        ...contractConfig,
+        functionName: 'buySeeds',
+        args: [cropType, BigInt(amount)],
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await Promise.all([refetchPlayer(), loadPlots()])
+    } catch (error) {
+      console.error('Error buying seeds:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // Update player state when data changes
   useEffect(() => {
@@ -208,13 +203,13 @@ export function useFarmingContract() {
     if (address) {
       loadPlots()
     }
-  }, [address])
+  }, [address, loadPlots])
 
   return {
     // State
     plots,
     player,
-    isLoading: isLoading || isPending || isConfirming,
+    isLoading,
     isConnected,
     address,
 
@@ -225,11 +220,5 @@ export function useFarmingContract() {
     buySeeds,
     loadPlots,
     buyCoins,
-
-    // Transaction status
-    hash,
-    isPending,
-    isConfirming,
-    isSuccess,
   }
 } 
