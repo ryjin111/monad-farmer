@@ -86,6 +86,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContract(wagmiConfig, {
         ...contractConfig,
+        account: address as `0x${string}`,
         functionName: 'buyCoins',
         value: parseEther(monadAmount),
       })
@@ -108,6 +109,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContract(wagmiConfig, {
         ...contractConfig,
+        account: address as `0x${string}`,
         functionName: 'plantCrop',
         args: [BigInt(plotId), cropType],
       })
@@ -129,6 +131,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContract(wagmiConfig, {
         ...contractConfig,
+        account: address as `0x${string}`,
         functionName: 'waterPlot',
         args: [BigInt(plotId)],
       })
@@ -150,6 +153,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContract(wagmiConfig, {
         ...contractConfig,
+        account: address as `0x${string}`,
         functionName: 'harvestCrop',
         args: [BigInt(plotId)],
       })
@@ -171,6 +175,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContract(wagmiConfig, {
         ...contractConfig,
+        account: address as `0x${string}`,
         functionName: 'buySeeds',
         args: [cropType, BigInt(amount)],
       })
