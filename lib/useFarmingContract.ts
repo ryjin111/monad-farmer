@@ -1,3 +1,5 @@
+'use client'
+
 import { useAccount, useReadContract, useWriteContract } from 'wagmi'
 import { waitForTransactionReceipt } from 'wagmi/actions'
 import { contractConfig, CropType, PlotState } from './contract'
@@ -86,6 +88,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContractAsync({
         ...contractConfig,
+        chainId: contractConfig.chainId,
         functionName: 'buyCoins',
         value: parseEther(monadAmount),
       })
@@ -108,6 +111,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContractAsync({
         ...contractConfig,
+        chainId: contractConfig.chainId,
         functionName: 'plantCrop',
         args: [BigInt(plotId), cropType],
       })
@@ -129,6 +133,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContractAsync({
         ...contractConfig,
+        chainId: contractConfig.chainId,
         functionName: 'waterPlot',
         args: [BigInt(plotId)],
       })
@@ -150,6 +155,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContractAsync({
         ...contractConfig,
+        chainId: contractConfig.chainId,
         functionName: 'harvestCrop',
         args: [BigInt(plotId)],
       })
@@ -171,6 +177,7 @@ export function useFarmingContract() {
       setIsLoading(true)
       const txHash = await writeContractAsync({
         ...contractConfig,
+        chainId: contractConfig.chainId,
         functionName: 'buySeeds',
         args: [cropType, BigInt(amount)],
       })
