@@ -1,5 +1,5 @@
-import { useAccount, useReadContract } from 'wagmi'
-import { writeContract as writeContractAction, waitForTransactionReceipt } from 'wagmi/actions'
+import { useAccount, useReadContract, useWriteContract } from 'wagmi'
+import { waitForTransactionReceipt } from 'wagmi/actions'
 import { contractConfig, CropType, PlotState } from './contract'
 import { useState, useEffect, useCallback } from 'react'
 import { parseEther } from 'viem'
@@ -40,8 +40,8 @@ export function useFarmingContract() {
     },
   })
 
-  // Use wagmi action for writes
-  const writeContract = writeContractAction
+  // Hook to write
+  const { writeContractAsync } = useWriteContract()
 
   // Load all plots for a player
   const loadPlots = useCallback(async () => {
@@ -84,9 +84,8 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
-      const txHash = await writeContract(wagmiConfig, {
+      const txHash = await writeContractAsync({
         ...contractConfig,
-        account: address as `0x${string}`,
         functionName: 'buyCoins',
         value: parseEther(monadAmount),
       })
@@ -107,9 +106,8 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
-      const txHash = await writeContract(wagmiConfig, {
+      const txHash = await writeContractAsync({
         ...contractConfig,
-        account: address as `0x${string}`,
         functionName: 'plantCrop',
         args: [BigInt(plotId), cropType],
       })
@@ -129,9 +127,8 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
-      const txHash = await writeContract(wagmiConfig, {
+      const txHash = await writeContractAsync({
         ...contractConfig,
-        account: address as `0x${string}`,
         functionName: 'waterPlot',
         args: [BigInt(plotId)],
       })
@@ -151,9 +148,8 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
-      const txHash = await writeContract(wagmiConfig, {
+      const txHash = await writeContractAsync({
         ...contractConfig,
-        account: address as `0x${string}`,
         functionName: 'harvestCrop',
         args: [BigInt(plotId)],
       })
@@ -173,9 +169,8 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
-      const txHash = await writeContract(wagmiConfig, {
+      const txHash = await writeContractAsync({
         ...contractConfig,
-        account: address as `0x${string}`,
         functionName: 'buySeeds',
         args: [cropType, BigInt(amount)],
       })
