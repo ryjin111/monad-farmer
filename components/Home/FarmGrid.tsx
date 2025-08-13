@@ -45,7 +45,10 @@ export function FarmGrid() {
 
     // If there's a crop ready to harvest, harvest it
     if (plot.isReady) {
-      harvestCrop(plotId)
+      harvestCrop(plotId).catch((err: any) => {
+        const msg = err?.shortMessage || err?.message || 'Harvest failed. Please try again.'
+        alert(msg)
+      })
     }
   }
 
@@ -172,7 +175,10 @@ export function FarmGrid() {
               {/* Water Button for planted/growing crops */}
               {plot && (plot.state === PlotState.PLANTED || plot.state === PlotState.GROWING) && !plot.isReady && (
                 <button
-                  onClick={() => waterPlot(i)}
+                  onClick={() => waterPlot(i).catch((err: any) => {
+                    const msg = err?.shortMessage || err?.message || 'Watering failed. Please try again.'
+                    alert(msg)
+                  })}
                   disabled={isLoading}
                   className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-full flex items-center justify-center transition-colors"
                   title="Water crop"
@@ -184,7 +190,10 @@ export function FarmGrid() {
               {/* Harvest Button for ready crops */}
               {plot && plot.isReady && (
                 <button
-                  onClick={() => harvestCrop(i)}
+                  onClick={() => harvestCrop(i).catch((err: any) => {
+                    const msg = err?.shortMessage || err?.message || 'Harvest failed. Please try again.'
+                    alert(msg)
+                  })}
                   disabled={isLoading}
                   className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-500 hover:bg-yellow-600 text-white text-xs rounded-full flex items-center justify-center transition-colors"
                   title="Harvest crop"

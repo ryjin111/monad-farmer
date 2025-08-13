@@ -142,6 +142,7 @@ export function useFarmingContract() {
       await Promise.all([refetchPlayer(), loadPlots()])
     } catch (error) {
       console.error('Error watering plot:', error)
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -164,6 +165,7 @@ export function useFarmingContract() {
       await Promise.all([refetchPlayer(), loadPlots()])
     } catch (error) {
       console.error('Error harvesting crop:', error)
+      throw error
     } finally {
       setIsLoading(false)
     }

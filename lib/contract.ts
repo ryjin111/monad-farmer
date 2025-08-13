@@ -149,8 +149,8 @@ export const FARMING_GAME_ABI = [
         "internalType": "uint256",
         "name": "monadAmount",
         "type": "uint256"
-  },
-  {
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
         "name": "coinsReceived",
@@ -247,7 +247,7 @@ export const FARMING_GAME_ABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-      },
+  },
   {
     "inputs": [
       {
@@ -686,7 +686,8 @@ export const FARMING_GAME_ABI = [
 ] as const
 
 // Contract address (deployed to Monad testnet)
-export const FARMING_GAME_ADDRESS = '0x0e48E4df05167A12687aA50cF34F1A5DC2D37361'
+export const FARMING_GAME_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x0e48E4df05167A12687aA50cF34F1A5DC2D37361') as `0x${string}`
+export const MONAD_TESTNET_CHAIN_ID = monadTestnet.id
 
 // Crop types enum
 export enum CropType {
