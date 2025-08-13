@@ -11,8 +11,10 @@ export function WalletActions() {
   const { isEthProviderAvailable, isSDKLoaded } = useFrame()
   const { isConnected, address, chainId } = useAccount()
   const { disconnect, isPending: isDisconnecting } = useDisconnect()
-  const { switchChain } = useSwitchChain()
+  const { switchChain, isPending: isSwitching } = useSwitchChain()
   const { connect, error: connectError, isPending: isConnecting } = useConnect()
+
+  const MONAD_TESTNET_CHAIN_ID = 10143
 
   const handleConnect = async () => {
     try {
@@ -24,6 +26,15 @@ export function WalletActions() {
       const connector = miniAppConnector()
       await connect({ connector })
       
+      // Ensure correct network after connect
+      try {
+        if (chainId !== MONAD_TESTNET_CHAIN_ID) {
+          await switchChain({ chainId: MONAD_TESTNET_CHAIN_ID })
+        }
+      } catch (e) {
+        console.warn('Network switch failed or not supported, user may need to switch manually.', e)
+      }
+
       console.log('Connect call completed')
     } catch (error) {
       console.error('Wallet connection error:', error)
@@ -51,26 +62,38 @@ export function WalletActions() {
           </div>
         </div>
         
+        {chainId !== MONAD_TESTNET_CHAIN_ID && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded p-2 text-sm text-yellow-800">
+            You are on the wrong network. Please switch to Monad Testnet.
+            <button
+              type="button"
+              className="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-white rounded p-2 text-sm font-medium disabled:opacity-50 transition-colors"
+              onClick={() => switchChain({ chainId: MONAD_TESTNET_CHAIN_ID })}
+              disabled={isSwitching}
+            >
+              {isSwitching ? '🔄 Switching...' : '🔁 Switch to Monad Testnet'}
+            </button>
+          </div>
+        )}
+        
         <div className="space-y-2">
           <p className="text-sm text-green-700">
             Address: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-            </p>
+          </p>
           <p className="text-sm text-green-700">
             Chain ID: <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{chainId}</span>
-            {chainId === 10143 && <span className="text-green-600 ml-2">✓ Monad Testnet</span>}
+            {chainId === MONAD_TESTNET_CHAIN_ID && <span className="text-green-600 ml-2">✓ Monad Testnet</span>}
           </p>
-              </div>
+        </div>
 
-
-
-            <button
-              type="button"
+        <button
+          type="button"
           className="w-full bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 text-sm font-medium disabled:opacity-50 transition-colors"
           onClick={handleDisconnect}
           disabled={isDisconnecting}
-            >
+        >
           {isDisconnecting ? '🔄 Disconnecting...' : '❌ Disconnect Wallet'}
-            </button>
+        </button>
       </div>
     )
   }
@@ -84,14 +107,14 @@ export function WalletActions() {
           Connect your wallet to start farming and earning coins!
         </p>
         
-          <button
-            type="button"
+        <button
+          type="button"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-2 text-sm font-medium disabled:opacity-50 transition-colors"
           onClick={handleConnect}
           disabled={isConnecting}
-          >
+        >
           {isConnecting ? '🔄 Connecting...' : '🔗 Connect Wallet'}
-          </button>
+        </button>
         
         {connectError && (
           <div className="text-sm text-red-600 bg-red-50 p-2 rounded border">
@@ -100,7 +123,7 @@ export function WalletActions() {
             <p className="text-xs mt-1">
               Make sure you're using the Farcaster app and have a wallet connected.
             </p>
-        </div>
+          </div>
         )}
       </div>
     )
