@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useFarmingContract } from '@/lib/useFarmingContract'
+import { useFarmingContract } from '../../lib/useFarmingContract'
 
 export function MiningDashboard() {
   const { 
@@ -61,10 +61,10 @@ export function MiningDashboard() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-6">
         <div className="text-6xl">⛏️</div>
-        <h1 className="text-3xl font-bold text-center">BigCoin Miner</h1>
+        <h1 className="text-3xl font-bold text-center">Comnad Miner</h1>
         <p className="text-gray-600 text-center">Connect your wallet to start mining</p>
         <div className="text-sm text-gray-500">
-          A Peer-to-Peer Big Cash System
+          Mine until you make it
         </div>
       </div>
     )
@@ -74,15 +74,15 @@ export function MiningDashboard() {
     <div className="space-y-6 max-w-md mx-auto">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">BigCoin Miner</h1>
-        <p className="text-sm text-gray-600">A Peer-to-Peer Big Cash System</p>
+        <h1 className="text-2xl font-bold">Comnad Miner</h1>
+        <p className="text-sm text-gray-600">Mine until you make it</p>
       </div>
 
       {/* Coin Balance */}
       <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-xl p-6 text-center text-white shadow-lg">
         <div className="text-sm opacity-90 mb-2">Your Balance</div>
         <div className={`text-4xl font-bold transition-all duration-500 ${animateCoins ? 'scale-110' : 'scale-100'}`}>
-          {formatNumber(localCoins)} $BIG
+          {formatNumber(localCoins)} $COMN
         </div>
         <div className="text-xs opacity-75 mt-2">
           has already been mined.
@@ -145,7 +145,7 @@ export function MiningDashboard() {
               disabled={isLoading || !player || Number(player.coins) < 100}
               className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
-              100 $BIG
+              100 $COMN
             </button>
           </div>
 
@@ -163,7 +163,7 @@ export function MiningDashboard() {
               disabled={isLoading || !player || Number(player.coins) < 250}
               className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
-              250 $BIG
+              250 $COMN
             </button>
           </div>
         </div>
@@ -171,7 +171,7 @@ export function MiningDashboard() {
 
       {/* Stats Footer */}
       <div className="text-center text-xs text-gray-500 space-y-1">
-        <div>Total Mined: {miningStats ? formatNumber(miningStats.totalMined) : '0'} $BIG</div>
+        <div>Total Mined: {miningStats ? formatNumber(miningStats.totalMined) : '0'} $COMN</div>
         <div>Address: {address?.slice(0, 6)}...{address?.slice(-4)}</div>
       </div>
 
