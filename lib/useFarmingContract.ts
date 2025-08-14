@@ -5,7 +5,7 @@ import { waitForTransactionReceipt } from 'wagmi/actions'
 import { contractConfig, CropType, PlotState } from './contract'
 import { useState, useEffect, useCallback } from 'react'
 import { parseEther } from 'viem'
-import { config as wagmiConfig } from '@/components/wallet-provider'
+import { config as wagmiConfig } from '../components/wallet-provider'
 
 export interface OnChainPlot {
   cropType: CropType
@@ -271,8 +271,8 @@ export function useFarmingContract() {
 
   // Update player state when data changes
   useEffect(() => {
-    if (playerData) {
-      const [coins, experience, level, totalHarvests, totalPlanted] = playerData
+    if (playerData && Array.isArray(playerData)) {
+      const [coins, experience, level, totalHarvests, totalPlanted] = playerData as unknown as [bigint, bigint, bigint, bigint, bigint]
       setPlayer({
         coins,
         experience,
