@@ -1,12 +1,11 @@
 'use client'
 
-import { useAccount, useReadContract, useWriteContract } from 'wagmi'
+import { useAccount, useReadContract, useWriteContract, useChainId, useSwitchChain } from 'wagmi'
 import { waitForTransactionReceipt } from 'wagmi/actions'
 import { contractConfig, CropType, PlotState } from './contract'
 import { useState, useEffect, useCallback } from 'react'
 import { parseEther } from 'viem'
 import { config as wagmiConfig } from '@/components/wallet-provider'
-import { useChainId, useSwitchChain } from 'wagmi'
 
 export interface OnChainPlot {
   cropType: CropType
@@ -26,11 +25,20 @@ export interface OnChainPlayer {
   totalPlanted: bigint
 }
 
+export interface MiningStats {
+  totalMined: bigint
+  miningRate: bigint
+  lastMined: number
+  upgradeLevel: bigint
+}
+
 export function useFarmingContract() {
   const { address, isConnected } = useAccount()
   const [plots, setPlots] = useState<OnChainPlot[]>([])
   const [player, setPlayer] = useState<OnChainPlayer | null>(null)
+  const [miningStats, setMiningStats] = useState<MiningStats | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isMining, setIsMining] = useState(false)
 
   // Chain management
   const currentChainId = useChainId()
@@ -93,6 +101,56 @@ export function useFarmingContract() {
     }
   }, [address])
 
+  // Mining function - simulates continuous mining
+  const startMining = useCallback(async () => {
+    if (!address || isMining) return
+
+    try {
+      setIsMining(true)
+      await ensureCorrectChain()
+      
+      const txHash = await writeContractAsync({
+        ...contractConfig,
+        functionName: 'harvestCrop', // Repurpose harvest as mining
+        args: [BigInt(0)], // Use plot 0 as mining slot
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await refetchPlayer()
+    } catch (error) {
+      console.error('Error mining:', error)
+      throw error
+    } finally {
+      setIsMining(false)
+    }
+  }, [address, isMining, ensureCorrectChain, writeContractAsync, refetchPlayer])
+
+  // Buy mining upgrades
+  const buyUpgrade = async (upgradeType: 'speed' | 'power') => {
+    if (!address) return
+
+    try {
+      setIsLoading(true)
+      await ensureCorrectChain()
+      
+      // Use buySeeds function repurposed for upgrades
+      const upgradeId = upgradeType === 'speed' ? CropType.TOMATO : CropType.CARROT
+      const txHash = await writeContractAsync({
+        ...contractConfig,
+        functionName: 'buySeeds',
+        args: [upgradeId, BigInt(1)],
+      })
+
+      await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
+      await refetchPlayer()
+    } catch (error) {
+      console.error('Error buying upgrade:', error)
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // Buy coins with MONAD
   const buyCoins = async (monadAmount: string) => {
     if (!address) {
@@ -105,13 +163,12 @@ export function useFarmingContract() {
       await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
-        chainId: contractConfig.chainId,
         functionName: 'buyCoins',
         value: parseEther(monadAmount),
       })
 
       await waitForTransactionReceipt(wagmiConfig, { hash: txHash })
-      await Promise.all([refetchPlayer(), loadPlots()])
+      await refetchPlayer()
     } catch (error) {
       console.error('Error buying coins:', error)
       throw error
@@ -120,7 +177,7 @@ export function useFarmingContract() {
     }
   }
 
-  // Plant crop
+  // Plant crop (keep original functionality)
   const plantCrop = async (plotId: number, cropType: CropType) => {
     if (!address) return
 
@@ -129,7 +186,6 @@ export function useFarmingContract() {
       await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
-        chainId: contractConfig.chainId,
         functionName: 'plantCrop',
         args: [BigInt(plotId), cropType],
       })
@@ -138,6 +194,7 @@ export function useFarmingContract() {
       await Promise.all([refetchPlayer(), loadPlots()])
     } catch (error) {
       console.error('Error planting crop:', error)
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -152,7 +209,6 @@ export function useFarmingContract() {
       await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
-        chainId: contractConfig.chainId,
         functionName: 'waterPlot',
         args: [BigInt(plotId)],
       })
@@ -176,7 +232,6 @@ export function useFarmingContract() {
       await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
-        chainId: contractConfig.chainId,
         functionName: 'harvestCrop',
         args: [BigInt(plotId)],
       })
@@ -200,7 +255,6 @@ export function useFarmingContract() {
       await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
-        chainId: contractConfig.chainId,
         functionName: 'buySeeds',
         args: [cropType, BigInt(amount)],
       })
@@ -209,6 +263,7 @@ export function useFarmingContract() {
       await Promise.all([refetchPlayer(), loadPlots()])
     } catch (error) {
       console.error('Error buying seeds:', error)
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -225,6 +280,14 @@ export function useFarmingContract() {
         totalHarvests,
         totalPlanted,
       })
+
+      // Set mining stats based on player data
+      setMiningStats({
+        totalMined: totalHarvests, // Repurpose harvests as total mined
+        miningRate: level * BigInt(10), // Mining rate based on level
+        lastMined: Date.now(),
+        upgradeLevel: level,
+      })
     }
   }, [playerData])
 
@@ -239,11 +302,17 @@ export function useFarmingContract() {
     // State
     plots,
     player,
+    miningStats,
     isLoading,
+    isMining,
     isConnected,
     address,
 
-    // Actions
+    // Mining actions
+    startMining,
+    buyUpgrade,
+
+    // Original actions
     plantCrop,
     waterPlot,
     harvestCrop,
