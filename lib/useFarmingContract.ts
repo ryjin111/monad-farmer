@@ -6,6 +6,7 @@ import { contractConfig, CropType, PlotState } from './contract'
 import { useState, useEffect, useCallback } from 'react'
 import { parseEther } from 'viem'
 import { config as wagmiConfig } from '@/components/wallet-provider'
+import { useChainId, useSwitchChain } from 'wagmi'
 
 export interface OnChainPlot {
   cropType: CropType
@@ -30,6 +31,21 @@ export function useFarmingContract() {
   const [plots, setPlots] = useState<OnChainPlot[]>([])
   const [player, setPlayer] = useState<OnChainPlayer | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Chain management
+  const currentChainId = useChainId()
+  const { switchChainAsync } = useSwitchChain()
+
+  const ensureCorrectChain = useCallback(async () => {
+    if (currentChainId !== contractConfig.chainId) {
+      try {
+        await switchChainAsync({ chainId: contractConfig.chainId })
+      } catch (err) {
+        console.error('Failed to switch chain', err)
+        throw new Error('Wrong network. Please switch to Monad Testnet in your wallet and try again.')
+      }
+    }
+  }, [currentChainId, switchChainAsync])
 
   // Read contract functions
   const { data: playerData, refetch: refetchPlayer } = useReadContract({
@@ -86,6 +102,7 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
+      await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
         chainId: contractConfig.chainId,
@@ -109,6 +126,7 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
+      await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
         chainId: contractConfig.chainId,
@@ -131,6 +149,7 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
+      await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
         chainId: contractConfig.chainId,
@@ -154,6 +173,7 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
+      await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
         chainId: contractConfig.chainId,
@@ -177,6 +197,7 @@ export function useFarmingContract() {
 
     try {
       setIsLoading(true)
+      await ensureCorrectChain()
       const txHash = await writeContractAsync({
         ...contractConfig,
         chainId: contractConfig.chainId,
